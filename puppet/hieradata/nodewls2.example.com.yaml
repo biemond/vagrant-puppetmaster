@@ -1,0 +1,50 @@
+---
+messageEnv: 'node2'
+
+orawls::weblogic::log_output:   true
+
+
+logoutput:                     &logoutput                     true
+
+hosts:
+  'puppet.grahamgilbert.dev':
+    ip:                "10.10.10.2"
+    host_aliases:      'puppet'
+  'adminwls.alfa.local':
+    ip:                "10.10.10.20"
+    host_aliases:      'adminwls'
+  'nodewls1.alfa.local':
+    ip:                "10.10.10.100"
+    host_aliases:      'nodewls1'
+  'nodewls2.alfa.local':
+    ip:                "10.10.10.200"
+    host_aliases:      'nodewls2'
+  'localhost':
+    ip:                "127.0.0.1"
+    host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
+
+# when you have just one domain on a server
+domain_name:                "Wls1036"
+domain_adminserver:         "AdminServer"
+domain_adminserver_address: "10.10.10.20"
+domain_adminserver_port:    7001
+domain_nodemanager_port:    5556
+domain_wls_password:        "weblogic1"
+domain_user_config_file:    "/home/oracle/oracle-Wls1036-WebLogicConfig.properties"
+domain_user_key_file:       "/home/oracle/oracle-Wls1036-WebLogicKey.properties"
+
+
+# create a standard domain
+domain_instances:
+
+
+# copy domains to other nodes
+copy_instances:
+  'wlsDomain':
+     log_output:              *logoutput
+
+
+# create and startup the nodemanager
+nodemanager_instances:
+  'nodemanager':
+     log_output:           *logoutput

@@ -1,0 +1,42 @@
+---
+
+hosts:
+  'puppet.grahamgilbert.dev':
+    ip:                "10.10.10.2"
+    host_aliases:      'puppet'
+  'oradb.example.com':
+    ip:                "10.10.10.5"
+    host_aliases:      'oradb'
+  'adminwls.example.com':
+    ip:                "10.10.10.20"
+    host_aliases:      'adminwls'
+  'nodewls1.example.com':
+    ip:                "10.10.10.100"
+    host_aliases:      'nodewls1'
+  'nodewls2.example.com':
+    ip:                "10.10.10.200"
+    host_aliases:      'nodewls2'
+  'localhost':
+    ip:                "127.0.0.1"
+    host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
+
+# global oracle vars
+oracle_base_dir:          '/oracle'
+oracle_home_dir:          '/oracle/product/11.2/db'
+oracle_version:           '11.2'
+
+# global OS vars
+ggate_os_user:            "ggate"
+oracle_os_user:           "oracle"
+oracle_os_group:          "dba"
+oracle_download_dir:      "/install"
+oracle_source:            "puppet:///database/"
+
+oracle_database_name:         'test'
+oracle_database_domain_name:  'oracle.com'  
+oracle_database_service_name: 'test.oracle.com'
+
+
+oracle_database_sys_password:    'Welcome01'
+oracle_database_system_password: 'Welcome01'
+

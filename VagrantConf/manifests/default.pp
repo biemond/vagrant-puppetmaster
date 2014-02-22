@@ -5,7 +5,7 @@ node default {
   host { 'puppet.grahamgilbert.dev':
     ensure       => 'present',
     host_aliases => ['puppet'],
-    ip           => '192.168.33.10',
+    ip           => '10.10.10.2',
     target       => '/etc/hosts',
   }
 

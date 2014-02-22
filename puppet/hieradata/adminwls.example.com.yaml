@@ -1,0 +1,154 @@
+---
+messageEnv: 'admin'
+
+orawls::weblogic::log_output:   true
+
+logoutput:                     &logoutput                     true
+
+hosts:
+  'puppet.grahamgilbert.dev':
+    ip:                "10.10.10.2"
+    host_aliases:      'puppet'
+  'adminwls.example.com':
+    ip:                "10.10.10.20"
+    host_aliases:      'adminwls'
+  'nodewls1.example.com':
+    ip:                "10.10.10.100"
+    host_aliases:      'nodewls1'
+  'nodewls2.example.com':
+    ip:                "10.10.10.200"
+    host_aliases:      'nodewls2'
+  'localhost':
+    ip:                "127.0.0.1"
+    host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
+
+
+# when you have just one domain on a server
+domain_name:                "Wls1036"
+domain_adminserver:         "AdminServer"
+domain_adminserver_address: "10.10.10.20"
+domain_adminserver_port:    7001
+domain_nodemanager_port:    5556
+domain_wls_password:        "weblogic1"
+domain_user_config_file:    "/home/oracle/oracle-Wls1036-WebLogicConfig.properties"
+domain_user_key_file:       "/home/oracle/oracle-Wls1036-WebLogicKey.properties"
+
+# create a standard domain
+domain_instances:
+  'wlsDomain':
+     domain_template:          "standard"
+     development_mode:         false
+     log_output:               *logoutput
+
+# pack domains
+pack_domain_instances:
+  'wlsDomain':
+     log_output:               *logoutput
+
+# create and startup the nodemanager
+nodemanager_instances:
+  'nodemanager':
+     log_output:           *logoutput
+
+# startup adminserver for extra configuration
+control_instances:
+  'startWLSAdminServer':
+     domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/Wls1036"
+     server_type:          'admin'
+     target:               'Server'
+     server:               'AdminServer'
+     action:               'start'
+     log_output:           *logoutput
+
+# create password file for WLST utility
+userconfig_instances:
+  'Wls12c':
+     log_output:           *logoutput
+     user_config_dir:      '/home/oracle'
+
+# create 2 machines
+machines_instances:
+  'createMachine_node1':
+     log_output:           *logoutput
+     weblogic_type:        "machine"
+     weblogic_object_name: "Node1"
+     script:               'createMachine.py'
+     params:
+        - "machineName      = 'Node1'"
+        - "machineDnsName   = '10.10.10.100'"
+  'createMachine_node2':
+     log_output:           *logoutput
+     weblogic_type:        "machine"
+     weblogic_object_name: "Node2"
+     script:               'createMachine.py'
+     params:
+        - "machineName      = 'Node2'"
+        - "machineDnsName   = '10.10.10.200'"
+
+server_instances:
+      'wlsServer1_node1':
+         weblogic_object_name: "wlsServer1"
+         log_output:           *logoutput
+         weblogic_type:        "server"
+         script:               'createServer.py'
+         params:
+            - "listenPort       = 8001"
+            - "nodeMgrLogDir    = '/data/logs'"
+            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
+            - "wlsServerName    = 'wlsServer1'"
+            - "machineName      = 'Node1'"
+            - "listenAddress    = '10.10.10.100'"
+      'wlsServer2_node2':
+         weblogic_object_name: "wlsServer2"
+         log_output:           *logoutput
+         weblogic_type:        "server"
+         script:               'createServer.py'
+         params:
+            - "listenPort       = 8001"
+            - "nodeMgrLogDir    = '/data/logs'"
+            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
+            - "wlsServerName    = 'wlsServer2'"
+            - "machineName      = 'Node2'"
+            - "listenAddress    = '10.10.10.200'"
+      'wlsServer3_node1':
+         weblogic_object_name: "wlsServer3"
+         log_output:           *logoutput
+         weblogic_type:        "server"
+         script:               'createServer.py'
+         params:
+            - "listenPort       = 8002"
+            - "nodeMgrLogDir    = '/data/logs'"
+            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
+            - "wlsServerName    = 'wlsServer3'"
+            - "machineName      = 'Node1'"
+            - "listenAddress    = '10.10.10.100'"
+      'wlsServer4_node2':
+         weblogic_object_name: "wlsServer4"
+         log_output:           *logoutput
+         weblogic_type:        "server"
+         script:               'createServer.py'
+         params:
+            - "listenPort       = 8002"
+            - "nodeMgrLogDir    = '/data/logs'"
+            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
+            - "wlsServerName    = 'wlsServer4'"
+            - "machineName      = 'Node2'"
+            - "listenAddress    = '10.10.10.200'"
+
+cluster_instances:
+      'cluster_web':
+         weblogic_object_name: "WebCluster"
+         log_output:           *logoutput
+         weblogic_type:        "cluster"
+         script:               'createCluster.py'
+         params:
+            - "clusterName      = 'WebCluster'"
+            - "clusterNodes     = 'wlsServer1,wlsServer2'"
+      'cluster_web2':
+         weblogic_object_name: "WebCluster2"
+         log_output:           *logoutput
+         weblogic_type:        "cluster"
+         script:               'createCluster.py'
+         params:
+            - "clusterName      = 'WebCluster2'"
+            - "clusterNodes     = 'wlsServer3,wlsServer4'"
