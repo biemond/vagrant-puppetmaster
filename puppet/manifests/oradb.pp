@@ -100,7 +100,7 @@ class oradb_11g {
                  schemaPrefix     => hiera('repository_prefix'),
                  reposPassword    => hiera('repository_password'),
                  tempTablespace   => 'TEMP',
-                 puppetDownloadMntPoint => => hiera('oracle_source'), 
+                 puppetDownloadMntPoint => hiera('oracle_source'), 
                  remoteFile       => true,
                  logoutput        => true,
                  require          => Oradb::Dbactions['start oraDb'],
