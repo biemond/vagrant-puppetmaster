@@ -6,86 +6,6 @@ node 'oradb.example.com' {
    include oradb_maintenance
 } 
 
-# operating settings for Database & Middleware
-class oradb_os {
-
-  $host_instances = hiera('hosts', [])
-  create_resources('host',$host_instances)
-
-
-  service { iptables:
-    enable    => false,
-    ensure    => false,
-    hasstatus => true,
-  }
-
-  group { 'dba' :
-    ensure      => present,
-  }
-
-  user { 'oracle' :
-    ensure      => present,
-    gid         => 'dba',  
-    groups      => 'dba',
-    shell       => '/bin/bash',
-    password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
-    home        => "/home/oracle",
-    comment     => "This user oracle was created by Puppet",
-    require     => Group['dba'],
-    managehome  => true,
-  }
-
-  user { 'ggate' :
-    ensure      => present,
-    gid         => 'dba',  
-    groups      => 'dba',
-    shell       => '/bin/bash',
-    password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
-    home        => "/home/ggate",
-    comment     => "This user ggate was created by Puppet",
-    require     => Group['dba'],
-    managehome  => true,
-  }
-
-  $install = [ 'binutils.x86_64', 'compat-libstdc++-33.x86_64', 'glibc.x86_64','ksh.x86_64','libaio.x86_64',
-               'libgcc.x86_64', 'libstdc++.x86_64', 'make.x86_64','compat-libcap1.x86_64', 'gcc.x86_64',
-               'gcc-c++.x86_64','glibc-devel.x86_64','libaio-devel.x86_64','libstdc++-devel.x86_64',
-               'sysstat.x86_64','unixODBC-devel','glibc.i686','libXext.i686','libXtst.i686']
-       
-
-  package { $install:
-    ensure  => present,
-  }
-
-  class { 'limits':
-         config => {
-                    '*'       => { 'nofile'  => { soft => '2048'   , hard => '8192',   },},
-                    'oracle'  => { 'nofile'  => { soft => '65536'  , hard => '65536',  },
-                                    'nproc'  => { soft => '2048'   , hard => '16384',  },
-                                    'stack'  => { soft => '10240'  ,},},
-                    },
-         use_hiera => false,
-  }
- 
-  sysctl { 'kernel.msgmnb':                 ensure => 'present', permanent => 'yes', value => '65536',}
-  sysctl { 'kernel.msgmax':                 ensure => 'present', permanent => 'yes', value => '65536',}
-  sysctl { 'kernel.shmmax':                 ensure => 'present', permanent => 'yes', value => '2588483584',}
-  sysctl { 'kernel.shmall':                 ensure => 'present', permanent => 'yes', value => '2097152',}
-  sysctl { 'fs.file-max':                   ensure => 'present', permanent => 'yes', value => '6815744',}
-  sysctl { 'net.ipv4.tcp_keepalive_time':   ensure => 'present', permanent => 'yes', value => '1800',}
-  sysctl { 'net.ipv4.tcp_keepalive_intvl':  ensure => 'present', permanent => 'yes', value => '30',}
-  sysctl { 'net.ipv4.tcp_keepalive_probes': ensure => 'present', permanent => 'yes', value => '5',}
-  sysctl { 'net.ipv4.tcp_fin_timeout':      ensure => 'present', permanent => 'yes', value => '30',}
-  sysctl { 'kernel.shmmni':                 ensure => 'present', permanent => 'yes', value => '4096', }
-  sysctl { 'fs.aio-max-nr':                 ensure => 'present', permanent => 'yes', value => '1048576',}
-  sysctl { 'kernel.sem':                    ensure => 'present', permanent => 'yes', value => '250 32000 100 128',}
-  sysctl { 'net.ipv4.ip_local_port_range':  ensure => 'present', permanent => 'yes', value => '9000 65500',}
-  sysctl { 'net.core.rmem_default':         ensure => 'present', permanent => 'yes', value => '262144',}
-  sysctl { 'net.core.rmem_max':             ensure => 'present', permanent => 'yes', value => '4194304', }
-  sysctl { 'net.core.wmem_default':         ensure => 'present', permanent => 'yes', value => '262144',}
-  sysctl { 'net.core.wmem_max':             ensure => 'present', permanent => 'yes', value => '1048576',}
-
-}
 
 class oradb_11g {
   require oradb_os
@@ -164,6 +84,29 @@ class oradb_11g {
                    dbName                  => hiera('oracle_database_name'),
                    require                 => Oradb::Dbactions['start oraDb'],
    }
+
+  oradb::rcu{  'DEV_PS6':
+                 rcuFile          => 'ofm_rcu_linux_11.1.1.7.0_64_disk1_1of1.zip',
+                 product          => hiera('repository_type'),
+                 version          => '11.1.1.7',
+                 user             => hiera('oracle_os_user'),
+                 group            => hiera('oracle_os_group'),
+                 downloadDir      => hiera('oracle_download_dir'),
+                 action           => 'create',
+                 oracleHome       => hiera('oracle_home_dir'),
+                 dbServer         => hiera('oracle_database_host'),
+                 dbService        => hiera('oracle_database_service_name'),
+                 sysPassword      => hiera('oracle_database_sys_password'),
+                 schemaPrefix     => hiera('repository_prefix'),
+                 reposPassword    => hiera('repository_password'),
+                 tempTablespace   => 'TEMP',
+                 puppetDownloadMntPoint => => hiera('oracle_source'), 
+                 remoteFile       => true,
+                 logoutput        => true,
+                 require          => Oradb::Dbactions['start oraDb'],
+  }
+
+
 }
 
 class goldengate_11g {

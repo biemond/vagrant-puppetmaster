@@ -1,0 +1,214 @@
+---
+messageEnv: 'admin'
+
+orawls::weblogic::log_output:   true
+
+logoutput:                     &logoutput                     true
+
+hosts:
+  'puppet.grahamgilbert.dev':
+    ip:                "10.10.10.2"
+    host_aliases:      'puppet'
+  'adminwls2.example.com':
+    ip:                "10.10.10.21"
+    host_aliases:      'adminwls2'
+  'localhost':
+    ip:                "127.0.0.1"
+    host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
+
+
+# when you have just one domain on a server
+domain_name:                "Wls1036"
+domain_adminserver:         "AdminServer"
+domain_adminserver_address: "10.10.10.21"
+domain_adminserver_port:    7001
+domain_nodemanager_port:    5556
+domain_wls_password:        "weblogic1"
+domain_user_config_file:    "/home/oracle/oracle-Wls1036-WebLogicConfig.properties"
+domain_user_key_file:       "/home/oracle/oracle-Wls1036-WebLogicKey.properties"
+
+# create a standard domain
+domain_instances:
+  'wlsDomain':
+     domain_template:          "standard"
+     development_mode:         false
+     log_output:               *logoutput
+
+# create and startup the nodemanager
+nodemanager_instances:
+  'nodemanager':
+     log_output:           *logoutput
+
+# startup adminserver for extra configuration
+control_instances:
+  'startWLSAdminServer':
+     domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/Wls1036"
+     server_type:          'admin'
+     target:               'Server'
+     server:               'AdminServer'
+     action:               'start'
+     log_output:           *logoutput
+
+# create password file for WLST utility
+userconfig_instances:
+  'Wls1036':
+     log_output:           *logoutput
+     user_config_dir:      '/home/oracle'
+
+jms_servers_instances:
+      jmsServerAdminServer:
+         weblogic_object_name: "jmsServer"
+         log_output:           *logoutput
+         weblogic_type:        "jmsserver"
+         script:               'createJmsServer.py'
+         params:
+            - "targetType       = 'Server'"
+            - "target           = 'AdminServer'"
+            - "jmsServerName    = 'jmsServer'"
+
+jms_modules_instances:
+      jmsModule:
+         log_output:           *logoutput
+         weblogic_object_name: "jmsModule"
+         weblogic_type:        "jmsmodule"
+         script:               'createJmsModule.py'
+         params:
+            - "jmsModuleName    = 'jmsModule'"
+            - "target           = 'AdminServer'"
+            - "targetType       = 'Server'"
+
+
+jms_subdeployments_instances:
+      SubDeploymentWLSforJmsModule:
+         weblogic_object_name: "jmsModule/wlsServers"
+         log_output:           *logoutput
+         weblogic_type:        "jmssubdeployment"
+         script:               'createJmsSubDeployment.py'
+         params:
+            - "jmsModuleName    = 'jmsModule'"
+            - "target           = 'AdminServer'"
+            - "targetType       = 'Server'"
+            - "subName          = 'wlsServers'"
+      SubDeploymentJMSforJmsModule:
+         weblogic_object_name: "jmsModule/jmsServers"
+         log_output:           *logoutput
+         weblogic_type:        "jmssubdeployment"
+         script:               'createJmsSubDeployment.py'
+         params:
+            - "jmsModuleName    = 'jmsModule'"
+            - "target           = 'jmsServer'"
+            - "targetType       = 'JMSServer'"
+            - "subName          = 'jmsServers'"
+
+jms_quotas_instances:
+      QuotaBigforJmsModule:
+         weblogic_object_name: "jmsModule/QuotaBig"
+         log_output:           *logoutput
+         weblogic_type:        "jmsquota"
+         script:               'createJmsQuota.py'
+         params:
+            - "messagesMaximum  = 9223372036854775807"
+            - "jmsModuleName    = 'jmsModule'"
+            - "shared           = false"
+            - "policy           = 'FIFO'"
+            - "jmsQuotaName     = 'QuotaBig'"
+            - "bytesMaximum     = 9223372036854775807"
+      QuotaLowforJmsModule:
+         weblogic_object_name: "jmsModule/QuotaLow"
+         log_output:           *logoutput
+         weblogic_type:        "jmsquota"
+         script:               'createJmsQuota.py'
+         params:
+            - "messagesMaximum  = 9223372036854775807"
+            - "jmsModuleName    = 'jmsModule'"
+            - "shared           = false"
+            - "policy           = 'FIFO'"
+            - "jmsQuotaName     = 'QuotaLow'"
+            - "bytesMaximum     = 10000000000"
+
+
+jms_cf_instances:
+      createJmsConnectionFactoryforJmsModule:
+         weblogic_object_name: "cf"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsConnectionFactory.py'
+         params:
+            - "subDeploymentName = 'wlsServers'"
+            - "jmsModuleName     = 'jmsModule'"
+            - "transacted        = 'false'"
+            - "timeout           = 100000"
+            - "cfName            = 'cf'"
+            - "cfJNDIName        = 'jms/cf'"
+
+jms_error_queues_instances:
+      createJmsErrorQueueforJmsModule:
+         weblogic_object_name: "ErrorQueue"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsModule'"
+            - "distributed       = 'false'"
+            - "useRedirect       = 'false'"
+            - "jmsName           = 'ErrorQueue'"
+            - "jmsJNDIName       = 'jms/ErrorQueue'"
+            - "jmsType           = 'queue'"
+
+
+jms_queues_instances:
+      createJmsQueueforJmsModule:
+         weblogic_object_name: "Queue1"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsModule'"
+            - "distributed       = 'false'"
+            - "deliveryDelay     = 2000"
+            - "limit             = 3"
+            - "timeToLive        = 300000"
+            - "jmsType           = 'queue'"
+            - "jmsName           = 'Queue1'"
+            - "jmsJNDIName       = 'jms/Queue1'"
+            - "useRedirect       = 'true'"
+            - "policy            = 'Redirect'"
+            - "errorObject       = 'ErrorQueue'"
+      createJmsQueueforJmsModule2:
+         weblogic_object_name: "Queue2"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsModule'"
+            - "distributed       = 'false'"
+            - "deliveryDelay     = 2000"
+            - "limit             = 3"
+            - "timeToLive        = 300000"
+            - "jmsType           = 'queue'"
+            - "jmsName           = 'Queue2'"
+            - "jmsJNDIName       = 'jms/Queue2'"
+            - "useLogRedirect    = 'true'"
+            - "loggingPolicy     = '%header%,%properties%'"
+
+jms_topics_instances:
+      createJmsTopicforJmsModule:
+         weblogic_object_name: "Topic1"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsModule'"
+            - "distributed       = 'false'"
+            - "deliveryDelay     = 2000"
+            - "limit             = 3"
+            - "timeToLive        = 300000"
+            - "jmsType           = 'topic'"
+            - "jmsName           = 'Topic1'"
+            - "jmsJNDIName       = 'jms/Topic1'"
+
+

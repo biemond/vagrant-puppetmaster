@@ -3,6 +3,16 @@ vagrant-puppetmaster for orawls,oradb puppet modules
 
 change the vagrant /software share so it points to your own Oracle binaries folder
 
+use the following repos for the matching clients https://github.com/biemond/puppetmaster-orawls-oradb-agents
+
+clients
+- oradb (oracle database 11.2.0.4 )
+- adminwls with nodewls1 & nodewls2 (cluster 10.3.6 with JMS)
+- adminwls2 ( adminserver 10.3.6  with JMS)
+- adminwls3 ( adminserver 12.1.2 )
+- adminwls4 ( adminserver 10.3.6 + osb PS6 + soa suite PS6 ( with bpm & bam ))
+- adminwls5 ( adminserver 10.3.6 + osb PS6 )
+
 This is a Vagrantfile for running a testing setup for Puppet. It includes a Puppet Master, Puppet Dashboard and PuppetDB. No idea what Vagrant is?
 
 - Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)

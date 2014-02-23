@@ -15,6 +15,7 @@ Vagrant.configure("2") do |config|
     master_config.vm.network :private_network, ip: "10.10.10.2"
 
     master_config.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "1532"]
       vb.customize ["modifyvm", :id, "--name", "puppet"]
     end
     

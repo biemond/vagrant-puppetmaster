@@ -1,0 +1,68 @@
+---
+messageEnv: 'admin'
+
+orawls::weblogic::log_output:   true
+
+logoutput:                     &logoutput                     true
+
+hosts:
+  'puppet.grahamgilbert.dev':
+    ip:                "10.10.10.2"
+    host_aliases:      'puppet'
+  'adminwls2.example.com':
+    ip:                "10.10.10.24"
+    host_aliases:      'adminwls5'
+  'localhost':
+    ip:                "127.0.0.1"
+    host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
+
+orautils::osDomainParam:          "Wls1036Osb"
+
+
+# when you have just one domain on a server
+domain_name:                "Wls1036Osb"
+domain_adminserver:         "AdminServer"
+domain_adminserver_address: "10.10.10.24"
+domain_adminserver_port:    7001
+domain_nodemanager_port:    5556
+domain_wls_password:        "weblogic1"
+domain_user_config_file:    "/home/oracle/oracle-Wls1036Osb-WebLogicConfig.properties"
+domain_user_key_file:       "/home/oracle/oracle-Wls1036Osb-WebLogicKey.properties"
+
+# create a standard domain
+domain_instances:
+  'wlsDomain':
+     domain_template:          "osb"
+     development_mode:         false
+     log_output:               *logoutput
+
+# create and startup the nodemanager
+nodemanager_instances:
+  'nodemanager':
+     log_output:           *logoutput
+
+# startup adminserver for extra configuration
+control_instances:
+  'startWLSAdminServer':
+     domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/Wls1036Osb"
+     server_type:          'admin'
+     target:               'Server'
+     server:               'AdminServer'
+     action:               'start'
+     log_output:           *logoutput
+
+# create password file for WLST utility
+userconfig_instances:
+  'Wls1036':
+     log_output:           *logoutput
+     user_config_dir:      '/home/oracle'
+
+
+# FMW installation on top of WebLogic 10.3.6
+fmw_installations:
+  'osbPS6':
+    fmw_product:             "osb"
+    fmw_file1:               "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip"
+    log_output:              true
+    remote_file:             true
+

@@ -62,7 +62,7 @@ control_instances:
 
 # create password file for WLST utility
 userconfig_instances:
-  'Wls12c':
+  'Wls1036':
      log_output:           *logoutput
      user_config_dir:      '/home/oracle'
 
@@ -152,3 +152,268 @@ cluster_instances:
          params:
             - "clusterName      = 'WebCluster2'"
             - "clusterNodes     = 'wlsServer3,wlsServer4'"
+
+jms_servers_instances:
+      jmsServerNode1:
+         weblogic_object_name: "jmsServer1"
+         log_output:           *logoutput
+         weblogic_type:        "jmsserver"
+         script:               'createJmsServer.py'
+         params:
+            - "targetType       = 'Server'"
+            - "target           = 'wlsServer1'"
+            - "jmsServerName    = 'jmsServer1'"
+      jmsServerNode2:
+         weblogic_object_name: "jmsServer2"
+         log_output:           *logoutput
+         weblogic_type:        "jmsserver"
+         script:               'createJmsServer.py'
+         params:
+            - "targetType       = 'Server'"
+            - "target           = 'wlsServer2'"
+            - "jmsServerName    = 'jmsServer2'"
+
+jms_saf_agents_instances:
+      jmsSAFAgent1:
+         weblogic_object_name: "jmsSAFAgent1"
+         log_output:           *logoutput
+         weblogic_type:        "safagent"
+         script:               'createSAFAgents.py'
+         params:
+            - "serviceType      = 'Both'"
+            - "target           = 'wlsServer1'"
+            - "name             = 'jmsSAFAgent1'"
+      jmsSAFAgent2:
+         weblogic_object_name: "jmsSAFAgent2"
+         log_output:           *logoutput
+         weblogic_type:        "safagent"
+         script:               'createSAFAgents.py'
+         params:
+            - "serviceType      = 'Both'"
+            - "target           = 'wlsServer2'"
+            - "name             = 'jmsSAFAgent2'"
+
+jms_modules_instances:
+      jmsClusterModule:
+         log_output:           *logoutput
+         weblogic_object_name: "jmsClusterModule"
+         weblogic_type:        "jmsmodule"
+         script:               'createJmsModule.py'
+         params:
+            - "jmsModuleName    = 'jmsClusterModule'"
+            - "target           = 'WebCluster'"
+            - "targetType       = 'Cluster'"
+
+
+jms_subdeployments_instances:
+      SubDeploymentWLSforJmsModule:
+         weblogic_object_name: "jmsClusterModule/wlsServers"
+         log_output:           *logoutput
+         weblogic_type:        "jmssubdeployment"
+         script:               'createJmsSubDeployment.py'
+         params:
+            - "jmsModuleName    = 'jmsClusterModule'"
+            - "target           = 'WebCluster'"
+            - "targetType       = 'Cluster'"
+            - "subName          = 'wlsServers'"
+      SubDeploymentJMSforJmsModule:
+         weblogic_object_name: "jmsClusterModule/jmsServers"
+         log_output:           *logoutput
+         weblogic_type:        "jmssubdeployment"
+         script:               'createJmsSubDeployment.py'
+         params:
+            - "jmsModuleName    = 'jmsClusterModule'"
+            - "target           = 'jmsServer1,jmsServer2'"
+            - "targetType       = 'JMSServer'"
+            - "subName          = 'jmsServers'"
+
+jms_quotas_instances:
+      QuotaBigforJmsModule:
+         weblogic_object_name: "jmsClusterModule/QuotaBig"
+         log_output:           *logoutput
+         weblogic_type:        "jmsquota"
+         script:               'createJmsQuota.py'
+         params:
+            - "messagesMaximum  = 9223372036854775807"
+            - "jmsModuleName    = 'jmsClusterModule'"
+            - "shared           = false"
+            - "policy           = 'FIFO'"
+            - "jmsQuotaName     = 'QuotaBig'"
+            - "bytesMaximum     = 9223372036854775807"
+      QuotaLowforJmsModule:
+         weblogic_object_name: "jmsClusterModule/QuotaLow"
+         log_output:           *logoutput
+         weblogic_type:        "jmsquota"
+         script:               'createJmsQuota.py'
+         params:
+            - "messagesMaximum  = 9223372036854775807"
+            - "jmsModuleName    = 'jmsClusterModule'"
+            - "shared           = false"
+            - "policy           = 'FIFO'"
+            - "jmsQuotaName     = 'QuotaLow'"
+            - "bytesMaximum     = 10000000000"
+
+
+jms_cf_instances:
+      createJmsConnectionFactoryforJmsModule:
+         weblogic_object_name: "cf"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsConnectionFactory.py'
+         params:
+            - "subDeploymentName = 'wlsServers'"
+            - "jmsModuleName     = 'jmsClusterModule'"
+            - "transacted        = 'false'"
+            - "timeout           = 100000"
+            - "cfName            = 'cf'"
+            - "cfJNDIName        = 'jms/cf'"
+
+jms_error_queues_instances:
+      createJmsErrorQueueforJmsModule:
+         weblogic_object_name: "ErrorQueue"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsClusterModule'"
+            - "distributed       = 'true'"
+            - "balancingPolicy   = 'Round-Robin'"
+            - "useRedirect       = 'false'"
+            - "jmsName           = 'ErrorQueue'"
+            - "jmsJNDIName       = 'jms/ErrorQueue'"
+            - "jmsType           = 'queue'"
+
+
+jms_queues_instances:
+      createJmsQueueforJmsModule:
+         weblogic_object_name: "Queue1"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsClusterModule'"
+            - "distributed       = 'true'"
+            - "balancingPolicy   = 'Round-Robin'"
+            - "deliveryDelay     = 2000"
+            - "limit             = 3"
+            - "timeToLive        = 300000"
+            - "jmsType           = 'queue'"
+            - "jmsName           = 'Queue1'"
+            - "jmsJNDIName       = 'jms/Queue1'"
+            - "useRedirect       = 'true'"
+            - "policy            = 'Redirect'"
+            - "errorObject       = 'ErrorQueue'"
+      createJmsQueueforJmsModule2:
+         weblogic_object_name: "Queue2"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsClusterModule'"
+            - "distributed       = 'true'"
+            - "balancingPolicy   = 'Round-Robin'"
+            - "deliveryDelay     = 2000"
+            - "limit             = 3"
+            - "timeToLive        = 300000"
+            - "jmsType           = 'queue'"
+            - "jmsName           = 'Queue2'"
+            - "jmsJNDIName       = 'jms/Queue2'"
+            - "useLogRedirect    = 'true'"
+            - "loggingPolicy     = '%header%,%properties%'"
+
+jms_topics_instances:
+      createJmsTopicforJmsModule:
+         weblogic_object_name: "Topic1"
+         log_output:           *logoutput
+         weblogic_type:        "jmsobject"
+         script:               'createJmsQueueOrTopic.py'
+         params:
+            - "subDeploymentName = 'jmsServers'"
+            - "jmsModuleName     = 'jmsClusterModule'"
+            - "distributed       = 'true'"
+            - "balancingPolicy   = 'Round-Robin'"
+            - "deliveryDelay     = 2000"
+            - "limit             = 3"
+            - "timeToLive        = 300000"
+            - "jmsType           = 'topic'"
+            - "jmsName           = 'Topic1'"
+            - "jmsJNDIName       = 'jms/Topic1'"
+
+jms_foreign_server_instances:
+    createAQForeignServerJmsModule:
+       weblogic_object_name: "jmsClusterModule/AQForeignServer"
+       log_output:           *logoutput
+       weblogic_type:        "foreignserver"
+       script:               'createJmsForeignServer.py'
+       params:
+          - "jmsModuleName    = 'jmsClusterModule'"
+          - "subDeployment             = 'jmsServers'"
+          - "JNDIInitialContextFactory = 'oracle.jms.AQjmsInitialContextFactory'"
+          - "JNDIpropertyName          = 'datasource'"
+          - "JNDIpropertyValue         = 'jdbc/hrDS'"
+          - "name                      = 'AQForeignServer'"
+    createForeignServerJmsModule:
+       weblogic_object_name: "jmsClusterModule/ForeignServer"
+       log_output:           *logoutput
+       weblogic_type:        "foreignserver"
+       script:               'createJmsForeignServer.py'
+       params:
+          - "jmsModuleName    = 'jmsClusterModule'"
+          - "name              = 'ForeignServer'"
+          - "connectionURL     = 't3://10.10.10.20:7001'"
+
+
+jms_foreign_server_objects_instances:
+    createAQForeignServerObjectJmsModule:
+       weblogic_object_name: "jmsClusterModule/AQForeignServer/TestQueue"
+       log_output:           *logoutput
+       weblogic_type:        "foreignserver_object"
+       script:               'createJmsForeignServerObject.py'
+       params:
+          - "jmsModuleName    = 'jmsClusterModule'"
+          - "fsName             = 'AQForeignServer'"
+          - "fsType             = 'destination'"
+          - "objectName         = 'TestQueue'"
+          - "localJNDI          = 'jms/aq/TestQueue'"
+          - "remoteJNDI         = 'Queues/TestQueue'"
+    createAQForeignServerObjectJmsModule2:
+       weblogic_object_name: "jmsClusterModule/AQForeignServer/XAQueueCF"
+       log_output:           *logoutput
+       weblogic_type:        "foreignserver_object"
+       script:               'createJmsForeignServerObject.py'
+       params:
+          - "jmsModuleName    = 'jmsClusterModule'"
+          - "fsName             = 'AQForeignServer'"
+          - "fsType             = 'cf'"
+          - "objectName         = 'XAQueueCF'"
+          - "localJNDI          = 'jms/XAQueueCF'"
+          - "remoteJNDI         = 'XAQueueConnectionFactory'"
+    createForeignServerObjectJmsModule:
+       weblogic_object_name: "jmsClusterModule/ForeignServer/TestQueue"
+       log_output:           *logoutput
+       weblogic_type:        "foreignserver_object"
+       script:               'createJmsForeignServerObject.py'
+       params:
+          - "jmsModuleName    = 'jmsClusterModule'"
+          - "fsName             = 'ForeignServer'"
+          - "fsType             = 'destination'"
+          - "objectName         = 'TestQueue'"
+          - "localJNDI          = 'jms/local/TestQueue'"
+          - "remoteJNDI         = 'jms/remote/TestQueue'"
+    createForeignServerObjectJmsModule2:
+       weblogic_object_name: "jmsClusterModule/ForeignServer/CF"
+       log_output:           *logoutput
+       weblogic_type:        "foreignserver_object"
+       script:               'createJmsForeignServerObject.py'
+       params:
+          - "jmsModuleName    = 'jmsClusterModule'"
+          - "fsName             = 'ForeignServer'"
+          - "fsType             = 'cf'"
+          - "objectName         = 'CF'"
+          - "localJNDI          = 'jms/local/cf'"
+          - "remoteJNDI         = 'jms/remote/cf'"
+
+
