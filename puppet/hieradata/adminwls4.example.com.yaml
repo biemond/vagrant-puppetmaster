@@ -17,6 +17,8 @@ hosts:
     host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
 
 orautils::osDomainParam:          "Wls1036SoaOsb"
+orautils::osDomainTypeParam:      "soa"
+orautils::osDomainPathParam:      "/opt/oracle/middleware11g/user_projects/domains/Wls1036SoaOsb"
 
 
 # when you have just one domain on a server
