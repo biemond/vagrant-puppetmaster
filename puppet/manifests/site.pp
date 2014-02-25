@@ -1,4 +1,8 @@
 
+
+node 'puppet.grahamgilbert.dev' {
+}
+
 import "general.pp"
 import "oradb.pp"
 import "wls_admin.pp"

@@ -4,6 +4,7 @@ node 'oradb.example.com' {
    include goldengate_11g
    include oradb_11g
    include oradb_maintenance
+#   include oradb_configuration
 } 
 
 
@@ -156,6 +157,41 @@ class goldengate_11g {
         require       => Oradb::Goldengate['ggate12.1.2'],
       }
 }
+
+class oradb_configuration {
+  require oradb_11g
+
+  tablespace {'scott_ts':
+    ensure                    => present,
+    size                      => 100M,
+    logging                   => yes,
+    autoextend                => on,
+    next                      => 100M,
+    max_size                  => 12288M,
+    extent_management         => local,
+    segment_space_management  => auto,
+  }
+
+  role {'apps':
+    ensure    => present,
+  }
+
+  oracle_user{'scott':
+    temporary_tablespace      => temp,
+    default_tablespace        => 'scott_ts',
+    password                  => 'tiger',
+    grants                    => ['SELECT ANY TABLE',
+                                  'CONNECT',
+                                  'RESOURCE',
+                                  'apps'],
+    quotas                    => { "scott_ts" => 'unlimited'},
+    require                   => [Tablespace['scott_ts'],
+                                  Role['apps']],
+  }
+
+
+}
+
 
 class oradb_maintenance {
   require oradb_11g
