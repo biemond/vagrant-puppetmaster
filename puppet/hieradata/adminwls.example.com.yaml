@@ -68,130 +68,103 @@ userconfig_instances:
 
 # create 2 machines
 machines_instances:
-  'createMachine_node1':
-     log_output:           *logoutput
-     weblogic_type:        "machine"
-     weblogic_object_name: "Node1"
-     script:               'createMachine.py'
-     params:
-        - "machineName      = 'Node1'"
-        - "machineDnsName   = '10.10.10.100'"
-  'createMachine_node2':
-     log_output:           *logoutput
-     weblogic_type:        "machine"
-     weblogic_object_name: "Node2"
-     script:               'createMachine.py'
-     params:
-        - "machineName      = 'Node2'"
-        - "machineDnsName   = '10.10.10.200'"
+  'Node1':
+    ensure:         'present'
+    listenaddress:  '10.10.10.100'
+    listenport:     '5556'
+    machinetype:    'UnixMachine'
+    nmtype:         'SSL'
+  'Node2':
+    ensure:         'present'
+    listenaddress:  '10.10.10.200'
+    listenport:     '5556'
+    machinetype:    'UnixMachine'
+    nmtype:         'SSL'
 
 server_instances:
-      'wlsServer1_node1':
-         weblogic_object_name: "wlsServer1"
-         log_output:           *logoutput
-         weblogic_type:        "server"
-         script:               'createServer.py'
-         params:
-            - "listenPort       = 8001"
-            - "nodeMgrLogDir    = '/data/logs'"
-            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
-            - "wlsServerName    = 'wlsServer1'"
-            - "machineName      = 'Node1'"
-            - "listenAddress    = '10.10.10.100'"
-      'wlsServer2_node2':
-         weblogic_object_name: "wlsServer2"
-         log_output:           *logoutput
-         weblogic_type:        "server"
-         script:               'createServer.py'
-         params:
-            - "listenPort       = 8001"
-            - "nodeMgrLogDir    = '/data/logs'"
-            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
-            - "wlsServerName    = 'wlsServer2'"
-            - "machineName      = 'Node2'"
-            - "listenAddress    = '10.10.10.200'"
-      'wlsServer3_node1':
-         weblogic_object_name: "wlsServer3"
-         log_output:           *logoutput
-         weblogic_type:        "server"
-         script:               'createServer.py'
-         params:
-            - "listenPort       = 8002"
-            - "nodeMgrLogDir    = '/data/logs'"
-            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
-            - "wlsServerName    = 'wlsServer3'"
-            - "machineName      = 'Node1'"
-            - "listenAddress    = '10.10.10.100'"
-      'wlsServer4_node2':
-         weblogic_object_name: "wlsServer4"
-         log_output:           *logoutput
-         weblogic_type:        "server"
-         script:               'createServer.py'
-         params:
-            - "listenPort       = 8002"
-            - "nodeMgrLogDir    = '/data/logs'"
-            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
-            - "wlsServerName    = 'wlsServer4'"
-            - "machineName      = 'Node2'"
-            - "listenAddress    = '10.10.10.200'"
+      'wlsServer1':
+         ensure:                         'present'
+         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
+         listenaddress:                  '10.10.10.100'
+         listenport:                     '8001'
+         logfilename:                    '/data/logs/wlsServer1.log'
+         machine:                        'Node1'
+         sslenabled:                     '1'
+         ssllistenport:                  '8201'
+         sslhostnameverificationignored: '1'
+      'wlsServer2':
+         ensure:                         'present'
+         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'
+         listenaddress:                  '10.10.10.200'
+         listenport:                     '8001'
+         logfilename:                    '/data/logs/wlsServer2.log'
+         machine:                        'Node2'
+         sslenabled:                     '1'
+         ssllistenport:                  '8201'
+         sslhostnameverificationignored: '1'
+      'wlsServer3':
+         ensure:                         'present'
+         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer3.out -Dweblogic.Stderr=/data/logs/wlsServer3_err.out'
+         listenaddress:                  '10.10.10.100'
+         listenport:                     '8002'
+         logfilename:                    '/data/logs/wlsServer3.log'
+         machine:                        'Node1'
+         sslenabled:                     '1'
+         ssllistenport:                  '8202'
+         sslhostnameverificationignored: '1'
+      'wlsServer4':
+         ensure:                         'present'
+         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer4.out -Dweblogic.Stderr=/data/logs/wlsServer4_err.out'
+         listenaddress:                  '10.10.10.200'
+         listenport:                     '8002'
+         logfilename:                    '/data/logs/wlsServer4.log'
+         machine:                        'Node2'
+         sslenabled:                     '1'
+         ssllistenport:                  '8202'
+         sslhostnameverificationignored: '1'
+
 
 cluster_instances:
-      'cluster_web':
-         weblogic_object_name: "WebCluster"
-         log_output:           *logoutput
-         weblogic_type:        "cluster"
-         script:               'createCluster.py'
-         params:
-            - "clusterName      = 'WebCluster'"
-            - "clusterNodes     = 'wlsServer1,wlsServer2'"
-      'cluster_web2':
-         weblogic_object_name: "WebCluster2"
-         log_output:           *logoutput
-         weblogic_type:        "cluster"
-         script:               'createCluster.py'
-         params:
-            - "clusterName      = 'WebCluster2'"
-            - "clusterNodes     = 'wlsServer3,wlsServer4'"
+    'WebCluster':
+        ensure:         'present'
+        messagingmode:  'unicast'
+        migrationbasis: 'consensus'
+        servers:        'wlsServer1,wlsServer2'
+    'WebCluster2':
+        ensure:         'present'
+        messagingmode:  'unicast'
+        migrationbasis: 'consensus'
+        servers:        'wlsServer3,wlsServer4'
 
-jms_servers_instances:
-      jmsServerNode1:
-         weblogic_object_name: "jmsServer1"
-         log_output:           *logoutput
-         weblogic_type:        "jmsserver"
-         script:               'createJmsServer.py'
-         params:
-            - "targetType       = 'Server'"
-            - "target           = 'wlsServer1'"
-            - "jmsServerName    = 'jmsServer1'"
-      jmsServerNode2:
-         weblogic_object_name: "jmsServer2"
-         log_output:           *logoutput
-         weblogic_type:        "jmsserver"
-         script:               'createJmsServer.py'
-         params:
-            - "targetType       = 'Server'"
-            - "target           = 'wlsServer2'"
-            - "jmsServerName    = 'jmsServer2'"
+jmsserver_instances:
+   jmsServer1:
+     ensure:      'present'
+     target:      'wlsServer1'
+     targettype:  'Server'
+   jmsServer2:
+     ensure:      'present'
+     target:      'wlsServer2'
+     targettype:  'Server'
+   jmsServer3:
+     ensure:      'present'
+     target:      'wlsServer3'
+     targettype:  'Server'
+   jmsServer4:
+     ensure:      'present'
+     target:      'wlsServer4'
+     targettype:  'Server'
 
-jms_saf_agents_instances:
-      jmsSAFAgent1:
-         weblogic_object_name: "jmsSAFAgent1"
-         log_output:           *logoutput
-         weblogic_type:        "safagent"
-         script:               'createSAFAgents.py'
-         params:
-            - "serviceType      = 'Both'"
-            - "target           = 'wlsServer1'"
-            - "name             = 'jmsSAFAgent1'"
-      jmsSAFAgent2:
-         weblogic_object_name: "jmsSAFAgent2"
-         log_output:           *logoutput
-         weblogic_type:        "safagent"
-         script:               'createSAFAgents.py'
-         params:
-            - "serviceType      = 'Both'"
-            - "target           = 'wlsServer2'"
-            - "name             = 'jmsSAFAgent2'"
+safagent_instances:
+    'jmsSAFAgent1':
+          ensure:      'present'
+          target:      'wlsServer1'
+          targettype:  'Server'
+          servicetype: 'Sending-only'
+    'jmsSAFAgent2':
+          ensure:      'absent'
+          target:      'wlsServer2'
+          targettype:  'Server'
+          servicetype: 'Both'
 
 jms_modules_instances:
       jmsClusterModule:

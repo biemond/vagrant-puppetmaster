@@ -55,16 +55,11 @@ userconfig_instances:
      log_output:           *logoutput
      user_config_dir:      '/home/oracle'
 
-jms_servers_instances:
-      jmsServerAdminServer:
-         weblogic_object_name: "jmsServer"
-         log_output:           *logoutput
-         weblogic_type:        "jmsserver"
-         script:               'createJmsServer.py'
-         params:
-            - "targetType       = 'Server'"
-            - "target           = 'AdminServer'"
-            - "jmsServerName    = 'jmsServer'"
+jmsserver_instances:
+   jmsServer:
+     ensure:      'present'
+     target:      'AdminServer'
+     targettype:  'Server'
 
 jms_modules_instances:
       jmsModule:

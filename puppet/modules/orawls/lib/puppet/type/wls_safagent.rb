@@ -16,22 +16,22 @@ module Puppet
     set_command(:wlst)
   
     to_get_raw_resources do
-      wlst template('providers/wls_safagent/index.py', binding)
+      wlst template('puppet:///modules/orawls/providers/wls_safagent/index.py.erb', binding)
     end
 
     on_create do
       Puppet.info "create #{name} "
-      template('providers/wls_safagent/create.py', binding)
+      template('puppet:///modules/orawls/providers/wls_safagent/create.py.erb', binding)
     end
 
     on_modify do
       Puppet.info "modify #{name} "
-      template('providers/wls_safagent/modify.py', binding)
+      template('puppet:///modules/orawls/providers/wls_safagent/modify.py.erb', binding)
     end
 
     on_destroy do
       Puppet.info "destroy #{name} "
-      template('providers/wls_safagent/destroy.py', binding)
+      template('puppet:///modules/orawls/providers/wls_safagent/destroy.py.erb', binding)
     end
 
     parameter :name
@@ -43,10 +43,6 @@ module Puppet
 
 
   private 
-
-    def name
-      self[:name]
-    end
 
     def servicetype
       self[:servicetype]

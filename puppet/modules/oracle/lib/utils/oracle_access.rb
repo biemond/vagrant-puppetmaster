@@ -55,7 +55,7 @@ module Utils
       outFile.close
       FileUtils.chmod(0777, outFile.path)
       tmpFile = Tempfile.new([ 'sql', '.sql' ])
-      tmpFile.puts template('execute.sql', binding)
+      tmpFile.puts template('puppet:///modules/oracle/execute.sql.erb', binding)
       tmpFile.close
       FileUtils.chmod(0555, tmpFile.path)
       output = `su - oracle -c 'export ORACLE_SID=#{db_sid};export ORAENV_ASK=NO;. oraenv;sqlplus -s /nolog @#{tmpFile.path}'`

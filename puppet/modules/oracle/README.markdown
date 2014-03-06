@@ -11,14 +11,14 @@
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
-		* [OS support](#os_support)
-		* [Oracle versions support](#oracle_version_support)
-		* [Managable Oracle objects](#managable_oracle_objects)
-		* [Tests - Testing your configuration](#tests)
+    * [OS support](#os-support)
+    * [Oracle versions support](#oracle-version-support)
+    * [Managable Oracle objects](#managable-oracle-objects)
+    * [Tests - Testing your configuration](#testing)
 
 ##Overview
 
-This module contains a couple of Puppet custom types to manage 'stuff' in an Oracle database. At this point in time we support manage tablespacses, oracle users, grants, roles and services.
+This module contains a couple of Puppet custom types to manage 'stuff' in an Oracle database. At this point in time we support manage tablespacses, oracle users, grants, roles and services. To learn more, check [the blog post](http://hajee.github.io/2014/02/23/using-puppet-to-manage-oracle/)
 
 ##Module Description
 
@@ -178,4 +178,8 @@ And run the tests from the root of the source code:
     rake test
 
 We are currently working on getting the acceptance test running as well.
+
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/hajee/oracle/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

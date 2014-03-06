@@ -50,6 +50,19 @@ class domains{
   $default_params = {}
   $domain_instances = hiera('domain_instances', {})
   create_resources('orawls::domain',$domain_instances, $default_params)
+
+  $domain_address = hiera('domain_adminserver_address')
+  $domain_port    = hiera('domain_adminserver_port')
+
+  wls_setting { 'default':
+    user               => hiera('wls_os_user'),
+    weblogic_home_dir  => hiera('wls_weblogic_home_dir'),
+    connect_url        => "t3://${domain_address}:${domain_port}",
+    weblogic_user      => hiera('wls_weblogic_user'),
+    weblogic_password  => hiera('domain_wls_password'),
+  }
+
+
 }
 
 class nodemanager {
@@ -77,7 +90,7 @@ class machines{
   require userconfig
   $default_params = {}
   $machines_instances = hiera('machines_instances', {})
-  create_resources('orawls::wlstexec',$machines_instances, $default_params)
+  create_resources('wls_machine',$machines_instances, $default_params)
 }
 
 
@@ -85,28 +98,28 @@ class managed_servers{
   require machines
   $default_params = {}
   $server_instances = hiera('server_instances', {})
-  create_resources('orawls::wlstexec',$server_instances, $default_params)
+  create_resources('wls_server',$server_instances, $default_params)
 }
 
 class clusters{
   require managed_servers
   $default_params = {}
   $cluster_instances = hiera('cluster_instances', {})
-  create_resources('orawls::wlstexec',$cluster_instances, $default_params)
+  create_resources('wls_cluster',$cluster_instances, $default_params)
 }
 
 class jms_servers{
   require clusters
   $default_params = {}
-  $jms_servers_instances = hiera('jms_servers_instances', {})
-  create_resources('orawls::wlstexec',$jms_servers_instances, $default_params)
+  $jms_servers_instances = hiera('jmsserver_instances', {})
+  create_resources('wls_jmsserver',$jms_servers_instances, $default_params)
 }
 
 class jms_saf_agents{
   require jms_servers
   $default_params = {}
   $jms_saf_agents_instances = hiera('jms_saf_agents_instances', {})
-  create_resources('orawls::wlstexec',$jms_saf_agents_instances, $default_params)
+  create_resources('wls_safagent',$jms_saf_agents_instances, $default_params)
 }
 
 class jms_modules{

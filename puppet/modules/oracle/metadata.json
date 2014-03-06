@@ -1,6 +1,6 @@
 {
   "name": "hajee-oracle",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "source": "http:/www.github.com/hajee/oracle",
   "author": "Bert Hajee",
   "license": "Apache License, Version 2.0",
@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "hajee/easy_type",
-      "version_requirement": ">= 0.5.0"
+      "version_requirement": ">= 0.5.1"
     }
   ],
   "types": [
@@ -197,12 +197,13 @@
     "Gemfile.lock": "68fc3cfe6c584ed65a2b4211b68a6aff",
     "Guardfile": "3ae8d9a61b870350cc1c8e0d6a9a36e7",
     "LICENSE": "47bbee59c4c1cb14cc3667035a227be0",
-    "Modulefile": "f37119eb675dd9b992ca3ba66dd19dbf",
+    "Modulefile": "72b6955bd013805e2bb59a07c54fa040",
     "Puppetfile": "4dc5c217d4c58ccdb7fee75b57d09d63",
     "Puppetfile.lock": "79995f4e9c48898ef9d4aba0f52465ab",
-    "README.markdown": "607c2648e16ba8b3a98b4f6cfcf83f73",
-    "Rakefile": "3f3bddcfdd94313bc87875bb3bce4c4c",
-    "lib/puppet/provider/listener/listener.rb": "3316c91a86534c6ebaec079dabdd7411",
+    "README.markdown": "5e5287edbae7636aa1d5b17d704cdd6a",
+    "Rakefile": "a088beef92fd9921cbe7501f9d8bd725",
+    "files/execute.sql.erb": "909bc64557cbe09a4be763a961b06ff1",
+    "lib/puppet/provider/listener/listener.rb": "c1df80cc4155ea56c0fb2e029161db35",
     "lib/puppet/provider/oracle_service/simple.rb": "3faabc988334a37f9a03ef961fdbbaa0",
     "lib/puppet/provider/oracle_user/simple.rb": "f779a0e7aac23fffec4bdc3ebbb1253e",
     "lib/puppet/provider/role/simple.rb": "789ad07c5d4dfe9e2ee0824e7e09211a",
@@ -232,12 +233,7 @@
     "lib/puppet/type/tablespace/segment_space_management.rb": "09661bed0c60ea8406246ff78c8f0813",
     "lib/puppet/type/tablespace/size.rb": "06f6c0f782ab916a9b0a8740a04ae9ab",
     "lib/puppet/type/tablespace.rb": "9b6138f83305460efa3d0a1df2bedd4d",
-    "lib/utils/oracle_access.rb": "4161c064d0ed2e8a8a0eaaeb5660a645",
-    "manifests/config.pp": "2ef16b3eb0a004471a06bee08eb9112d",
-    "manifests/init.pp": "7d8ed7d7b13a01648ddc8b339191f483",
-    "manifests/install.pp": "80469bfe899cc51a42c1ad8281fac564",
-    "manifests/params.pp": "c5d23c0c618837a053a72dd77277e12a",
-    "manifests/service.pp": "b5b8e0f79db9962786467b62cda94404",
+    "lib/utils/oracle_access.rb": "ad708ae16f395621c56618445296c3a4",
     "modules/easy_type/Gemfile": "2e4406b62c98f4df984e1b09c0e08297",
     "modules/easy_type/Gemfile.lock": "e02221a575b2a05cd19564335ab59a2f",
     "modules/easy_type/Guardfile": "0661e1bb1642d94025a9777a49981a24",
@@ -299,7 +295,6 @@
     "spec/unit/puppet/type/oracle_user_spec.rb": "2d155ced648c5da20214211c7d9a42eb",
     "spec/unit/puppet/type/role_spec.rb": "4cb435fe4af56bdce7df5f5aec191dee",
     "spec/unit/puppet/type/tablespace_spec.rb": "e0d1fcff7c2bf9d3e6340cea8f678835",
-    "templates/execute.sql.erb": "909bc64557cbe09a4be763a961b06ff1",
     "tests/init.pp": "f4b41706b21fc784db25e87c761a2aff"
   }
 }

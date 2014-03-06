@@ -4,7 +4,7 @@ node 'oradb.example.com' {
    include goldengate_11g
    include oradb_11g
    include oradb_maintenance
-#   include oradb_configuration
+   #include oradb_configuration
 } 
 
 

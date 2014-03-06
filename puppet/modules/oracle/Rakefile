@@ -9,8 +9,6 @@ begin
 rescue LoadError
 end
 
-require 'pry'
-binding.pry
 # Set prepend lib's from all modules to current path
 current_path = Pathname(__FILE__).parent
 module_path = current_path + 'modules'
