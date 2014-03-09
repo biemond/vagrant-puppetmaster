@@ -1,10 +1,10 @@
 
 node 'oradb.example.com' {
    include oradb_os
-   include goldengate_11g
+#   include goldengate_11g
    include oradb_11g
    include oradb_maintenance
-   #include oradb_configuration
+   include oradb_configuration
 } 
 
 
@@ -12,8 +12,8 @@ class oradb_11g {
   require oradb_os
 
     oradb::installdb{ '11.2_linux-x64':
-            version                => '11.2.0.4',
-            file                   => 'p13390677_112040_Linux-x86-64',
+            version                => '11.2.0.1',
+            file                   => 'linux.x64_11gR2_database',
             databaseType           => 'SE',
             oracleBase             => hiera('oracle_base_dir'),
             oracleHome             => hiera('oracle_home_dir'),
@@ -62,7 +62,7 @@ class oradb_11g {
                     recoveryAreaDestination => "/oracle/flash_recovery_area",
                     characterSet            => "AL32UTF8",
                     nationalCharacterSet    => "UTF8",
-                    initParams              => "open_cursors=1000,processes=600,job_queue_processes=4,compatible='11.2.0.4'",
+                    initParams              => "open_cursors=1000,processes=600,job_queue_processes=4",
                     sampleSchema            => 'TRUE',
                     memoryPercentage        => "40",
                     memoryTotal             => "800",
@@ -86,26 +86,26 @@ class oradb_11g {
                    require                 => Oradb::Dbactions['start oraDb'],
    }
 
-  oradb::rcu{  'DEV_PS6':
-                 rcuFile          => 'ofm_rcu_linux_11.1.1.7.0_64_disk1_1of1.zip',
-                 product          => hiera('repository_type'),
-                 version          => '11.1.1.7',
-                 user             => hiera('oracle_os_user'),
-                 group            => hiera('oracle_os_group'),
-                 downloadDir      => hiera('oracle_download_dir'),
-                 action           => 'create',
-                 oracleHome       => hiera('oracle_home_dir'),
-                 dbServer         => hiera('oracle_database_host'),
-                 dbService        => hiera('oracle_database_service_name'),
-                 sysPassword      => hiera('oracle_database_sys_password'),
-                 schemaPrefix     => hiera('repository_prefix'),
-                 reposPassword    => hiera('repository_password'),
-                 tempTablespace   => 'TEMP',
-                 puppetDownloadMntPoint => hiera('oracle_source'), 
-                 remoteFile       => true,
-                 logoutput        => true,
-                 require          => Oradb::Dbactions['start oraDb'],
-  }
+  # oradb::rcu{  'DEV_PS6':
+  #                rcuFile          => 'ofm_rcu_linux_11.1.1.7.0_64_disk1_1of1.zip',
+  #                product          => hiera('repository_type'),
+  #                version          => '11.1.1.7',
+  #                user             => hiera('oracle_os_user'),
+  #                group            => hiera('oracle_os_group'),
+  #                downloadDir      => hiera('oracle_download_dir'),
+  #                action           => 'create',
+  #                oracleHome       => hiera('oracle_home_dir'),
+  #                dbServer         => hiera('oracle_database_host'),
+  #                dbService        => hiera('oracle_database_service_name'),
+  #                sysPassword      => hiera('oracle_database_sys_password'),
+  #                schemaPrefix     => hiera('repository_prefix'),
+  #                reposPassword    => hiera('repository_password'),
+  #                tempTablespace   => 'TEMP',
+  #                puppetDownloadMntPoint => hiera('oracle_source'), 
+  #                remoteFile       => true,
+  #                logoutput        => true,
+  #                require          => Oradb::Dbactions['start oraDb'],
+  # }
 
 
 }
