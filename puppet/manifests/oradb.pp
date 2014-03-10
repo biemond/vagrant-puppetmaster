@@ -164,6 +164,7 @@ class oradb_configuration {
   tablespace {'scott_ts':
     ensure                    => present,
     size                      => 100M,
+    datafile                  => 'scott_ts.dbf',
     logging                   => yes,
     autoextend                => on,
     next                      => 100M,

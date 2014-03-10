@@ -6,7 +6,7 @@ newproperty(:size) do
   defaultto "500M"
 
   on_apply do
-    if provider.property_hash[:datafile]
+    if resource[:datafile]
       "size #{resource[:size]}"
     else
       "datafile size #{resource[:size]}"

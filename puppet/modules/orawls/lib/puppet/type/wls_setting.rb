@@ -1,6 +1,10 @@
+require 'rubygems'
+require 'ruby-debug'
+require 'pathname'
+$:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
+$:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
 require 'yaml'
-#require 'ruby-debug'
 
 module Puppet
   newtype(:wls_setting) do

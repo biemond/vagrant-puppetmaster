@@ -27,9 +27,29 @@ module EasyType
     # @return [String] interpreted ERB template
     #
     def template(name, context)
-      template_file = Puppet::FileServing::Content.indirection.find(name)
-      raise Puppet::ParseError, "Could not find template '#{name}'" unless template_file
-      ERB.new(template_file.content).result(context)
+      ERB.new(load_file(name).content).result(context)
+    end
+
+  private
+    def load_file(name)
+      if Puppet[:server] && Puppet[:server] != ''
+        terminus = :rest
+      else
+        terminus = :fileserver
+      end
+      with_terminus(terminus) do
+        template_file = Puppet::FileServing::Content.indirection.find(name)
+        raise ArgumentError, "Could not find template '#{name}'" unless template_file
+        template_file
+      end
+    end
+
+    def with_terminus(terminus)
+      old_terminus = Puppet[:default_file_terminus]
+      Puppet[:default_file_terminus] = terminus
+      value = yield
+      Puppet[:default_file_terminus] = old_terminus
+      value
     end
   end
 
