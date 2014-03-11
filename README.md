@@ -60,3 +60,6 @@ The Dashboard can be accessed at [http://10.10.10.2:3000](http://10.10.10.2:3000
 ###PuppetDB
 
 PuppetDB is configured and provides the inventory service in the Dashboard.
+
+[![Powered By EasyType](https://raw.github.com/hajee/easy_type/master/powered_by_easy_type.png)](https://github.com/hajee/easy_type)
+
