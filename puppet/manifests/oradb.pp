@@ -1,7 +1,7 @@
 
 node 'oradb.example.com' {
    include oradb_os
-#   include goldengate_11g
+   include goldengate_11g
    include oradb_11g
    include oradb_maintenance
    include oradb_configuration
@@ -86,32 +86,41 @@ class oradb_11g {
                    require                 => Oradb::Dbactions['start oraDb'],
    }
 
-  # oradb::rcu{  'DEV_PS6':
-  #                rcuFile          => 'ofm_rcu_linux_11.1.1.7.0_64_disk1_1of1.zip',
-  #                product          => hiera('repository_type'),
-  #                version          => '11.1.1.7',
-  #                user             => hiera('oracle_os_user'),
-  #                group            => hiera('oracle_os_group'),
-  #                downloadDir      => hiera('oracle_download_dir'),
-  #                action           => 'create',
-  #                oracleHome       => hiera('oracle_home_dir'),
-  #                dbServer         => hiera('oracle_database_host'),
-  #                dbService        => hiera('oracle_database_service_name'),
-  #                sysPassword      => hiera('oracle_database_sys_password'),
-  #                schemaPrefix     => hiera('repository_prefix'),
-  #                reposPassword    => hiera('repository_password'),
-  #                tempTablespace   => 'TEMP',
-  #                puppetDownloadMntPoint => hiera('oracle_source'), 
-  #                remoteFile       => true,
-  #                logoutput        => true,
-  #                require          => Oradb::Dbactions['start oraDb'],
-  # }
+  oradb::rcu{  'DEV_PS6':
+                 rcuFile          => 'ofm_rcu_linux_11.1.1.7.0_64_disk1_1of1.zip',
+                 product          => hiera('repository_type'),
+                 version          => '11.1.1.7',
+                 user             => hiera('oracle_os_user'),
+                 group            => hiera('oracle_os_group'),
+                 downloadDir      => hiera('oracle_download_dir'),
+                 action           => 'create',
+                 oracleHome       => hiera('oracle_home_dir'),
+                 dbServer         => hiera('oracle_database_host'),
+                 dbService        => hiera('oracle_database_service_name'),
+                 sysPassword      => hiera('oracle_database_sys_password'),
+                 schemaPrefix     => hiera('repository_prefix'),
+                 reposPassword    => hiera('repository_password'),
+                 tempTablespace   => 'TEMP',
+                 puppetDownloadMntPoint => hiera('oracle_source'), 
+                 remoteFile       => true,
+                 logoutput        => true,
+                 require          => Oradb::Dbactions['start oraDb'],
+  }
 
 
 }
 
 class goldengate_11g {
    require oradb_11g
+
+      file { "/oracle/oraInventory" :
+        ensure        => directory,
+        recurse       => true,
+        replace       => true,
+        mode          => 0775,
+        owner         => hiera('oracle_os_user'),
+        group         => hiera('oracle_os_group'),
+      }
 
       file { "/oracle/product" :
         ensure        => directory,
@@ -144,7 +153,7 @@ class goldengate_11g {
                          group                   => hiera('oracle_os_group'),
                          downloadDir             => '/install',
                          puppetDownloadMntPoint  =>  hiera('oracle_source'),
-                         require                 => [File["/oracle/product"],File["/oracle/product/12.1.2"]]
+                         require                 => [File["/oracle/product"],File["/oracle/product/12.1.2"],File["/oracle/oraInventory"]]
       }
 
       file { "/oracle/product/12.1.2/ggate/OPatch" :
