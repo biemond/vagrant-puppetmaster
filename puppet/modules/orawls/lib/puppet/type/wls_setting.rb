@@ -1,10 +1,6 @@
-require 'rubygems'
-require 'ruby-debug'
-require 'pathname'
-$:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
-$:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
 require 'yaml'
+#require 'ruby-debug'
 
 module Puppet
   newtype(:wls_setting) do
@@ -32,6 +28,7 @@ module Puppet
   private
 
     def self.resources_from_yaml
+      Puppet.info "0 read_from_yaml "
       @configuration = read_from_yaml
       normalize(@configuration)
     end
