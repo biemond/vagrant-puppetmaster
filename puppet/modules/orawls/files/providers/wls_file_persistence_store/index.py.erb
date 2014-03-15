@@ -1,7 +1,10 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
 def quote(text):
-	return "\"" + text.replace("\"", "\"\"") + "\""
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
 
 m = ls('/FileStores')
 
@@ -16,17 +19,16 @@ for token in m.split("dr--"):
         directory = get('Directory')
 
         n = ls('/FileStores/'+token+'/Targets')
-        target = ''
-
+        target     = []
+        targetType = []
         for token2 in n.split("dr--"):
             token2=token2.strip().lstrip().rstrip()
             if not token2 == '':
-               target = token2
+               target.append(token2)
                cd('/FileStores/'+token+'/Targets/'+token2)
-               targetType = get('Type')
+               targetType.append(get('Type'))
 
-
-        print >>f, quote(token)+";"+quote(directory)+";"+quote(target)+";"+quote(targetType)
+        print >>f, ";".join(map(quote, [token,directory,','.join(target),','.join(targetType)]))
 f.close()
 
 disconnect()

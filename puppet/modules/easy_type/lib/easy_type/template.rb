@@ -32,16 +32,30 @@ module EasyType
 
   private
     def load_file(name)
-      if Puppet[:server] && Puppet[:server] != ''
-        terminus = :rest
-      else
-        terminus = :fileserver
-      end
-      with_terminus(terminus) do
-        template_file = Puppet::FileServing::Content.indirection.find(name)
+      # Somehow there is no consistent way to determine what terminus to user. So we switch to a
+      # trial and error method. First we start withe the default. And if it doesn't work, we try the
+      # other ones
+      template_file = load_file_with_default_terminus(name)
+      rescue  SocketError => e
+        template_file = load_file_with_other_termini(name) unless template_file
+      ensure
         raise ArgumentError, "Could not find template '#{name}'" unless template_file
         template_file
+    end
+
+    def load_file_with_default_terminus(name)
+      Puppet::FileServing::Content.indirection.find(name)
+    end
+
+    def load_file_with_other_termini(name)
+      termini_to_try = [:rest, :file_server] - [Puppet[:default_file_terminus]]
+      termini_to_try.each do | terminus|
+        template_file = with_terminus(terminus) do
+          Puppet::FileServing::Content.indirection.find(name)
+        end
+        return template_file if template_file
       end
+      nil
     end
 
     def with_terminus(terminus)
