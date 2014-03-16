@@ -783,21 +783,23 @@ count_domains = -1
 
 def get_domains(domains_folder,count_domains)
   # check all domain in a domains folder
-  if FileTest.exists?( domains_folder)
+  if FileTest.exists?(domains_folder)
     output2 = Facter::Util::Resolution.exec('/bin/ls '+domains_folder)
-  end
-  output2.split(/\r?\n/).each_with_index do |domain, n|
-    count_domains += 1
-    # add domain facts
-    get_domain(domains_folder+'/'+domain,count_domains)
-    # add a full path domain fact
-    Facter.add("ora_mdw_domain_#{count_domains}") do
-      setcode do
-        domains_folder+'/'+domain
+    unless output2.nil?
+      output2.split(/\r?\n/).each_with_index do |domain, n|
+        count_domains += 1
+        # add domain facts
+        get_domain(domains_folder+'/'+domain,count_domains)
+        # add a full path domain fact
+        Facter.add("ora_mdw_domain_#{count_domains}") do
+          setcode do
+            domains_folder+'/'+domain
+          end
+        end
       end
-    end 
-  end
-  # return the domain counter
+    end   
+    # return the domain counter
+  end  
   return count_domains
 end
 
@@ -816,6 +818,7 @@ domainFolder = Facter.value('override_weblogic_domain_folder')
 unless domainFolder.nil?
   count_domains = get_domains(domainFolder+'/domains',count_domains)
 end
+
 Facter.add("ora_mdw_domain_cnt") do
   setcode do
     count_domains += 1
