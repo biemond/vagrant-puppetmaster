@@ -16,7 +16,8 @@ node 'adminwls.example.com','adminwls2.example.com','adminwls3.example.com','adm
   include jms_module_cfs
   include jms_module_queues_objects
   include jms_module_topics_objects
-  #include jms_module_foreign_server_objects,jms_module_foreign_server_entries_objects
+  include jms_module_foreign_server_objects
+  include jms_module_foreign_server_entries_objects
   include pack_domain
 
   Class[java] -> Class[orawls::weblogic]
@@ -179,22 +180,22 @@ class jms_module_topics_objects{
 }
 
 
-# class jms_module_foreign_server_objects{
-#   require jms_module_topics_objects
-#   $default_params = {}
-#   $jms_foreign_server_instances = hiera('jms_foreign_server_instances', {})
-#   create_resources('orawls::wlstexec',$jms_foreign_server_instances, $default_params)
-# }
+class jms_module_foreign_server_objects{
+  require jms_module_topics_objects
+  $default_params = {}
+  $jms_foreign_server_instances = hiera('jms_foreign_server_instances', {})
+  create_resources('orawls::wlstexec',$jms_foreign_server_instances, $default_params)
+}
 
-# class jms_module_foreign_server_entries_objects{
-#   require jms_module_foreign_server_objects
-#   $default_params = {}
-#   $jms_foreign_server_objects_instances = hiera('jms_foreign_server_objects_instances', {})
-#   create_resources('orawls::wlstexec',$jms_foreign_server_objects_instances, $default_params)
-# }
+class jms_module_foreign_server_entries_objects{
+  require jms_module_foreign_server_objects
+  $default_params = {}
+  $jms_foreign_server_objects_instances = hiera('jms_foreign_server_objects_instances', {})
+  create_resources('orawls::wlstexec',$jms_foreign_server_objects_instances, $default_params)
+}
 
 class pack_domain{
-  require jms_module_topics_objects
+  require jms_module_foreign_server_entries_objects
   $default_params = {}
   $pack_domain_instances = hiera('pack_domain_instances', $default_params)
   create_resources('orawls::packdomain',$pack_domain_instances, $default_params)
