@@ -58,6 +58,7 @@ orautils::osDomainPathParam:      "/opt/oracle/middleware11g/user_projects/domai
 orautils::nodeMgrPathParam:       "/opt/oracle/middleware11g/wlserver_10.3/server/bin"
 
 orautils::nodeMgrPortParam:       5556
+orautils::nodeMgrAddressParam:    'localhost'
 orautils::wlsUserParam:           *wls_weblogic_user
 orautils::wlsPasswordParam:       "weblogic1"
 orautils::wlsAdminServerParam:    "AdminServer"

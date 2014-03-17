@@ -97,15 +97,16 @@ define jdk7::install7 (
     }
   }
   if ($rsakeySizeFix == true) {
-    exec { "sleep 3 sec for urandomJavaFix":
-      command     => "/bin/sleep 3",
+    exec { "sleep 3 sec for urandomJavaFix ${fullVersion}":
+      command => "/bin/sleep 3",
+      unless  => "grep 'RSA keySize < 512' /usr/java/${fullVersion}/jre/lib/security/java.security",
       require => Javaexec["jdkexec ${title} ${version}"],
     }   
-    
     exec { "set RSA keySize ${fullVersion}":
-      command => "sed -i -e's/RSA keySize < 1024/RSA keySize < 512/g' /usr/java/${fullVersion}/jre/lib/security/java.security",
-      unless  => "grep 'RSA keySize < 512' /usr/java/${fullVersion}/jre/lib/security/java.security",
-      require => [Javaexec["jdkexec ${title} ${version}"],Exec ["sleep 3 sec for urandomJavaFix"]],
+      command     => "sed -i -e's/RSA keySize < 1024/RSA keySize < 512/g' /usr/java/${fullVersion}/jre/lib/security/java.security",
+      unless      => "grep 'RSA keySize < 512' /usr/java/${fullVersion}/jre/lib/security/java.security",
+      subscribe   => Exec["sleep 3 sec for urandomJavaFix ${fullVersion}"],
+      refreshonly => true,
     }
   }    
 }
