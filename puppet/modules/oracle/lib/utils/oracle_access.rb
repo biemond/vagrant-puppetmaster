@@ -23,7 +23,7 @@ module Utils
       }
       Puppet.info "Executing: #{command} on database #{sid}"
       csv_string = execute_sql(command, :sid => sid)
-      convert_csv_data_to_hash(csv_string)
+      convert_csv_data_to_hash(csv_string, [], :converters=> lambda {|f| f ? f.strip : nil})
     end
 
 
