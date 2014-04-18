@@ -47,4 +47,5 @@ copy_instances:
 # create and startup the nodemanager
 nodemanager_instances:
   'nodemanager':
+     nodemanager_address:  "10.10.10.100"
      log_output:           *logoutput

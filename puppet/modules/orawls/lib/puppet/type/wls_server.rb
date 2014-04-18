@@ -48,44 +48,7 @@ module Puppet
     property  :arguments
     property  :logfilename
     property  :sslhostnameverificationignored
-
-  private 
-
-    def ssllistenport
-      self[:ssllistenport]
-    end
-
-    def sslenabled
-      self[:sslenabled]
-    end
-
-    def listenaddress
-      self[:listenaddress]
-    end
-
-    def listenport
-      self[:listenport]
-    end
-
-    def machine
-      self[:machine]
-    end
-
-    def classpath
-      self[:classpath]
-    end
-
-    def arguments
-      self[:arguments]
-    end
-
-    def logfilename
-      self[:logfilename]
-    end
-
-    def sslhostnameverificationignored
-      self[:sslhostnameverificationignored]
-    end
+    property  :jsseenabled
 
   end
 end

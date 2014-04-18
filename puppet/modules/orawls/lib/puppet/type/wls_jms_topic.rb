@@ -39,10 +39,11 @@ module Puppet
       identity = lambda {|x| x}
       [
         [
-          /^(.*):(.*)$/,
+          /^((.*):(.*))$/,
           [
+            [ :name, identity ],
             [ :jmsmodule, identity ],
-            [ :name, identity ]
+            [ :topic_name, identity ]
           ]
         ],
         [
@@ -56,6 +57,7 @@ module Puppet
 
     parameter :name
     parameter :jmsmodule
+    parameter :topic_name
     property  :distributed
     property  :jndiname
     property  :subdeployment
@@ -69,65 +71,5 @@ module Puppet
     property  :redeliverydelay
     property  :timetodeliver
     property  :timetolive
-
-  private 
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def distributed
-       self[:distributed]
-    end
-
-    def jndiname
-       self[:jndiname]
-    end
-
-    def subdeployment
-       self[:subdeployment]
-    end
-
-    def defaulttargeting
-       self[:defaulttargeting]
-    end
-
-    def balancingpolicy
-       self[:balancingpolicy]
-    end
-
-    def quota
-       self[:quota]
-    end
-
-    def errordestination
-       self[:errordestination]
-    end
-
-    def expirationloggingpolicy
-       self[:expirationloggingpolicy]
-    end
-
-    def redeliverylimit
-       self[:redeliverylimit]
-    end
-
-    def expirationpolicy
-       self[:expirationpolicy]
-    end
-
-    def redeliverydelay
-       self[:redeliverydelay]
-    end
-
-    def timetodeliver
-       self[:timetodeliver]
-    end
-
-    def timetolive
-       self[:timetolive]
-    end
-
-
   end
 end

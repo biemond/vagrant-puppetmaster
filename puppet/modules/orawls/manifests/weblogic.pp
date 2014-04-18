@@ -5,6 +5,8 @@ class orawls::weblogic (
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
+  $wls_domains_dir      = undef, # /opt/oracle/wlsdomains/domains
+  $wls_apps_dir         = undef, # /opt/oracle/wlsdomains/applications
   $fmw_infra            = false, # true|false 12.1.2 option -> plain weblogic or fmw infra
   $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $os_user              = undef, # oracle
@@ -16,6 +18,23 @@ class orawls::weblogic (
   $log_output           = false, # true|false
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
+
+  if ( $wls_domains_dir != undef ) {
+    # make sure you don't create the middleware home, else root will be owner
+    if ($wls_domains_dir == "${middleware_home_dir}/user_projects/domains") {
+        $domains_dir =  undef
+    } else {
+        $domains_dir =  $wls_domains_dir
+    }
+  }
+  if ( $wls_apps_dir != undef ) {
+    # make sure you don't create the middleware home, else root will be owner
+    if ($wls_apps_dir == "${middleware_home_dir}/user_projects/applications") {
+        $apps_dir =  undef
+    } else {
+        $apps_dir =  $wls_apps_dir
+    }
+  }
 
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = "orawls/weblogic_silent_install.xml.erb"
@@ -60,7 +79,7 @@ class orawls::weblogic (
     } else {
       $mountPoint = $source
     }
-    
+
     $oraInventory  = "${oracle_base_home_dir}/oraInventory"
     orawls::utils::orainst { "weblogic orainst ${version}":
       ora_inventory_dir => $oraInventory,
@@ -70,6 +89,8 @@ class orawls::weblogic (
     orawls::utils::structure{"weblogic structure ${version}":
       oracle_base_home_dir => $oracle_base_home_dir,
       ora_inventory_dir    => $ora_inventory_dir,
+      wls_domains_dir      => $domains_dir,
+      wls_apps_dir         => $apps_dir,
       os_user              => $os_user,
       os_group             => $os_group,
       download_dir         => $download_dir,
@@ -104,33 +125,34 @@ class orawls::weblogic (
     }
 
     case $::kernel {
-      Linux: {
+      'Linux': {
         $oraInstPath        = "/etc"
         $java_statement     = "java ${javaParameters}"
-       }
-       SunOS: {
-         $oraInstPath       = "/var/opt"
-         $java_statement    = "java -d64 ${javaParameters}"
-       }
+      }
+      'SunOS': {
+        $oraInstPath       = "/var/opt"
+        $java_statement    = "java -d64 ${javaParameters}"
+      }
+      default: {
+        fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
+      }
     }
 
     $file_ext = regsubst($filename, '.*(\.jar)$', '\1')
 
     if $file_ext == '.jar' {
-      if ! $jar_file {
-        $jar_file = true
-      }    
+      $jar_file = true
     } else {
       $jar_file = false
-    }    
+    }
 
     if $jar_file {
-      $cmd_prefix = "${java_statement} -Xmx1024m -Djava.io.tmpdir=${temp_directory} -jar " 
+      $cmd_prefix = "${java_statement} -Xmx1024m -Djava.io.tmpdir=${temp_directory} -jar "
     } else {
       $cmd_prefix = ""
     }
 
-    notify { "orawls::weblogic $cmd_prefix": }
+    notify { "orawls::weblogic ${cmd_prefix}": }
 
     if ($version == 1212) {
 

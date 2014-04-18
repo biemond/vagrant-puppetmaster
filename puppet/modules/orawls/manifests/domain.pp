@@ -7,6 +7,8 @@ define orawls::domain (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
+  $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
   $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm
   $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
@@ -14,30 +16,38 @@ define orawls::domain (
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $java_arguments             = hiera('java_arguments', {}),               # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
+  $nodemanager_address        = undef,
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
+  $jsse_enabled               = hiera('wls_jsse_enabled'          , false),
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
   $os_group                   = hiera('wls_os_group'              , undef), # dba
   $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
   $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
   $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  $rcu_database_url           = undef,                                      #localhost:1521:XE"
   $repository_prefix          = hiera('repository_prefix'         , "DEV"),
   $repository_password        = hiera('repository_password'       , "Welcome01"),
+  $repository_sys_password    = undef,
 )
 {
-
-  if $::override_weblogic_domain_folder == undef {
-    $domain_dir = "${middleware_home_dir}/user_projects/domains"
-    $app_dir    = "${middleware_home_dir}/user_projects/applications"
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domain_dir = "${::override_weblogic_domain_folder}/domains"
-    $app_dir    = "${::override_weblogic_domain_folder}/applications"
+    $domains_dir =  $wls_domains_dir 
+  }
+  if ( $wls_apps_dir == undef ) {
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  } else {
+    $apps_dir =  $wls_apps_dir 
   }
 
+  $domain_dir = "${domains_dir}/${domain_name}"
+  
   # check if the domain already exists
-  $found = domain_exists("${domain_dir}/${domain_name}")
+  $found = domain_exists($domain_dir)
 
   if $found == undef {
     $continue = true
@@ -45,7 +55,7 @@ define orawls::domain (
     if ($found) {
       $continue = false
     } else {
-      notify { "orawls::domain ${title} ${domain_dir}/${domain_name} ${version} does not exists": }
+      notify { "orawls::domain ${title} ${domain_dir} ${version} does not exists": }
       $continue = true
     }
   }
@@ -155,12 +165,12 @@ define orawls::domain (
     }
 
     if $log_dir == undef {
-      $admin_nodemanager_log_dir = "${domain_dir}/${domain_name}/servers/${adminserver_name}/logs"
-      $nodemanager_log_dir       = "${domain_dir}/${domain_name}/nodemanager/nodemanager.log"
+      $admin_nodemanager_log_dir = "${domain_dir}/servers/${adminserver_name}/logs"
+      $nodemanager_log_dir       = "${domain_dir}/nodemanager/nodemanager.log"
 
-      $osb_nodemanager_log_dir   = "${domain_dir}/${domain_name}/servers/osb_server1/logs"
-      $soa_nodemanager_log_dir   = "${domain_dir}/${domain_name}/servers/soa_server1/logs"
-      $bam_nodemanager_log_dir   = "${domain_dir}/${domain_name}/servers/bam_server1/logs"
+      $osb_nodemanager_log_dir   = "${domain_dir}/servers/osb_server1/logs"
+      $soa_nodemanager_log_dir   = "${domain_dir}/servers/soa_server1/logs"
+      $bam_nodemanager_log_dir   = "${domain_dir}/servers/bam_server1/logs"
 
 
     } else {
@@ -207,13 +217,39 @@ define orawls::domain (
       group   => $os_group,
     }
 
-    if $::override_weblogic_domain_folder == undef {
-      # make the default domain folders
+    if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
       if !defined(File["weblogic_domain_folder"]) {
+          # check oracle install folder
+          file { "weblogic_domain_folder":
+            ensure  => directory,
+            path    => "${middleware_home_dir}/user_projects",
+            recurse => false,
+            replace => false,
+            mode    => '0775',
+            owner   => $os_user,
+            group   => $os_group,
+          }
+        File["weblogic_domain_folder"] -> File[$domains_dir]  
+      }
+    }
+
+    if !defined(File[$domains_dir]) {
+      # check oracle install folder
+      file { $domains_dir:
+        ensure  => directory,
+        recurse => false,
+        replace => false,
+        mode    => '0775',
+        owner   => $os_user,
+        group   => $os_group,
+      }
+    }
+
+    if $apps_dir != undef {
+      if !defined(File[$apps_dir]) {
         # check oracle install folder
-        file { "weblogic_domain_folder":
+        file { $apps_dir:
           ensure  => directory,
-          path    => "${middleware_home_dir}/user_projects",
           recurse => false,
           replace => false,
           mode    => '0775',
@@ -221,46 +257,31 @@ define orawls::domain (
           group   => $os_group,
         }
       }
-    } else {
-      # make override domain folders
-
-      if !defined(File["weblogic_domain_folder"]) {
-        # check oracle install folder
-        file { "weblogic_domain_folder":
-          ensure  => directory,
-          path    => $::override_weblogic_domain_folder,
-          recurse => false,
-          replace => false,
-          mode    => '0775',
-          owner   => $os_user,
-          group   => $os_group,
-        }
-      }
+      File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
-    if !defined(File[$domain_dir]) {
-      # check oracle install folder
-      file { $domain_dir:
-        ensure  => directory,
-        recurse => false,
-        replace => false,
-        mode    => '0775',
-        owner   => $os_user,
-        group   => $os_group,
-        require => File["weblogic_domain_folder"],
+    if ( $version == "1212" and $domain_template == 'adf' ) {
+      # only works for a 12c middleware home
+      # creates RCU for ADF
+      if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ) 
+      {
+        fail("Not all RCU parameters are provided")
       }
-    }
 
-    if !defined(File[$app_dir]) {
-      # check oracle install folder
-      file { $app_dir:
-        ensure  => directory,
-        recurse => false,
-        replace => false,
-        mode    => '0775',
-        owner   => $os_user,
-        group   => $os_group,
-        require => File["weblogic_domain_folder"],
+      orawls::utils::rcu{ "RCU_12c ${title}":
+        fmw_product                 => 'adf',
+        oracle_fmw_product_home_dir => "${middleware_home_dir}/oracle_common",
+        jdk_home_dir                => $jdk_home_dir,
+        os_user                     => $os_user,
+        os_group                    => $os_group,
+        download_dir                => $download_dir,
+        rcu_action                  => 'create',
+        rcu_database_url            => $rcu_database_url,
+        rcu_sys_password            => $repository_sys_password,
+        rcu_prefix                  => $repository_prefix,
+        rcu_password                => $repository_password,
+        log_output                  => $log_output,
+        before                      => Exec["execwlst ${domain_name} ${title}"],
       }
     }
 
@@ -268,15 +289,20 @@ define orawls::domain (
     exec { "execwlst ${domain_name} ${title}":
       command     => "${wlstPath}/wlst.sh ${download_dir}/domain_${domain_name}.py",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
-      unless      => "/usr/bin/test -e ${domain_dir}/${domain_name}",
-      creates     => "${domain_dir}/${domain_name}",
+      unless      => "/usr/bin/test -e ${domain_dir}",
+      creates     => $domain_dir,
       require     => [File["domain.py ${domain_name} ${title}"],
-                      File[$domain_dir],
-                      File[$app_dir]],
+                      File[$domains_dir]],
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
+    }
+
+    yaml_setting { "domain ${title}":
+      target =>  "/etc/wls_domains.yaml",
+      key    =>  "domains/${domain_name}",
+      value  =>  $domain_dir,
     }
 
     if $::kernel == "SunOS" {
@@ -286,8 +312,8 @@ define orawls::domain (
           $domain_template == 'osb_soa_bpm'){
 
         exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
           require => Exec["execwlst ${domain_name} ${title}"],
           path    => $exec_path,
           user    => $os_user,
@@ -295,8 +321,8 @@ define orawls::domain (
         }
 
         exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
           require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
           path    => $exec_path,
           user    => $os_user,
@@ -312,8 +338,8 @@ define orawls::domain (
           $domain_template == 'osb_soa_bpm'){
 
         exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
           require => Exec["execwlst ${domain_name} ${title}"],
           path    => $exec_path,
           user    => $os_user,
@@ -321,8 +347,8 @@ define orawls::domain (
         }
 
         exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -i -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          command => "sed -i -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
           require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
           path    => $exec_path,
           user    => $os_user,
@@ -339,8 +365,7 @@ define orawls::domain (
       group   => $os_group,
     }
 
-    $nodeMgrHome = "${domain_dir}/${domain_name}/nodemanager"
-    $listenPort   = $nodemanager_port
+    $nodeMgrHome = "${domain_dir}/nodemanager"
 
     # set our 12.1.2 nodemanager properties
     if ($version == 1212) {

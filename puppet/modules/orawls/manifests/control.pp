@@ -7,10 +7,11 @@
 #  wlsTarget     = Server|Cluster
 #
 define orawls::control (
+  $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef),
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $domain_name                = hiera('domain_name'               , undef),
-  $domain_dir                 = undef,
   $server_type                = 'admin',  # admin|managed
   $target                     = 'Server', # Server|Cluster
   $server                     = 'AdminServer',
@@ -20,29 +21,47 @@ define orawls::control (
   $action                     = 'start', # start|stop
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
+  $jsse_enabled               = hiera('wls_jsse_enabled'          , false),
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
   $os_group                   = hiera('wls_os_group'              , undef), # dba
   $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
   $log_output                 = false, # true|false
 )
 {
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir 
+  }
+
+  $domain_dir = "${domains_dir}/${domain_name}"
+  
   case $::kernel {
-    Linux: {
+    'Linux': {
       $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.Name=${server}' | /bin/grep ${domain_name}"
       $nativeLib      = "linux/x86_64"
       $java_statement = "java"
     }
-    SunOS: {
+    'SunOS': {
       $checkCommand   = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.Name=${server}' | /bin/grep ${domain_name}"
       $nativeLib      = "solaris/x64"
       $java_statement = "java -d64"
     }
+    default: {
+      fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
+    }    
   }
-  $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+
+  if $jsse_enabled == true {
+    $javaCommand = "${java_statement} -Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+  } else {
+    $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+  }
+
   $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
   Exec {
-     logoutput => $log_output,
+    logoutput => $log_output,
   }
 
   if $server_type == 'admin' {
@@ -78,7 +97,8 @@ define orawls::control (
   if $action == 'start' {
     exec { "execwlst ${title}${script} ":
       command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${jdk_home_dir}"],
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", 
+                      "JAVA_HOME=${jdk_home_dir}"],
       unless      => $checkCommand,
       require     => File["${download_dir}/${title}${script}"],
       path        => $exec_path,
@@ -89,7 +109,8 @@ define orawls::control (
   } elsif $action == 'stop' {
     exec { "execwlst ${title}${script} ":
       command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${jdk_home_dir}"],
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                      "JAVA_HOME=${jdk_home_dir}"],
       onlyif      => $checkCommand,
       require     => File["${download_dir}/${title}${script}"],
       path        => $exec_path,

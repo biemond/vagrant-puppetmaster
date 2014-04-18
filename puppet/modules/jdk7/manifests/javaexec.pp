@@ -4,14 +4,15 @@
 # set the default java links
 # set this java as default
 #
-define javaexec (
-  $path                 = undef,
-  $fullVersion          = undef,
-  $javaHomes            = undef,
-  $jdkfile              = undef,
-  $alternativesPriority = undef,
-  $user                 = undef,
-  $group                = undef,
+define jdk7::javaexec (
+  $path                      = undef,
+  $fullVersion               = undef,
+  $javaHomes                 = undef,
+  $jdkfile                   = undef,
+  $cryptographyExtensionFile = undef,
+  $alternativesPriority      = undef,
+  $user                      = undef,
+  $group                     = undef,
 ) {
 
   # set the Exec defaults
@@ -52,6 +53,17 @@ define javaexec (
     require => File[$javaHomes],
   }
 
+  # extract gz file in /usr/java
+  if ( $cryptographyExtensionFile != undef ) {
+    exec { "extract jce ${fullVersion}":
+      cwd     => "${javaHomes}/${fullVersion}/jre/lib/security",
+      command => "tar -xzf ${path}/${cryptographyExtensionFile}",
+      creates => "${javaHomes}/${fullVersion}/jre/lib/security/US_export_policy.jar",
+      require => [File[$javaHomes],Exec["extract java ${fullVersion}"]],
+      before  => Exec["chown -R root:root ${javaHomes}/${fullVersion}"],  
+    }
+  }
+
   # set permissions
   exec { "chown -R root:root ${javaHomes}/${fullVersion}":
     unless  => "ls -al ${javaHomes}/${fullVersion}/bin/java | awk ' { print \$3 }' |  grep  root",
@@ -73,7 +85,7 @@ define javaexec (
   }
 
   case $osfamily {
-    RedHat: {
+    'RedHat': {
       # set the java default
       exec { "default java alternatives ${fullVersion}":
         command => "alternatives --install /usr/bin/java java ${javaHomes}/${fullVersion}/bin/java ${alternativesPriority}",
@@ -81,13 +93,16 @@ define javaexec (
         unless  => "alternatives --display java | /bin/grep ${fullVersion}",
       }
     }
-    Debian, Suse:{
+    'Debian', 'Suse':{
       # set the java default
       exec { "default java alternatives ${fullVersion}":
         command => "update-alternatives --install /usr/bin/java java ${javaHomes}/${fullVersion}/bin/java ${alternativesPriority}",
         require => File['/usr/java/default'],
         unless  => "update-alternatives --list java | /bin/grep ${fullVersion}",
       }
+    }
+    default: {
+      fail("Unrecognized osfamily ${::osfamily}, please use it on a Linux host")
     }
   }
 }

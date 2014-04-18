@@ -16,6 +16,8 @@ hosts:
     ip:                "127.0.0.1"
     host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
 
+orautils::nodeMgrAddressParam:    '10.10.10.21'
+
 
 # when you have just one domain on a server
 domain_name:                "Wls1036"
@@ -37,12 +39,13 @@ domain_instances:
 # create and startup the nodemanager
 nodemanager_instances:
   'nodemanager':
+     nodemanager_address:  "10.10.10.21"
      log_output:           *logoutput
 
 # startup adminserver for extra configuration
 control_instances:
   'startWLSAdminServer':
-     domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/Wls1036"
+     domain_name:          "Wls1036"
      server_type:          'admin'
      target:               'Server'
      server:               'AdminServer'

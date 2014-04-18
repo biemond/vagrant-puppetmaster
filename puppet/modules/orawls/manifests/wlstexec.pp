@@ -55,15 +55,15 @@ define orawls::wlstexec (
   }
 
   # use userConfigStore for the connect
-  if $weblogic_password == undef {    
+  if $weblogic_password == undef {
     $useStoreConfig = true
   } else {
-    # override if config and key files are provided 
+    # override if config and key files are provided
     if($userConfigFile != undef and $userKeyFile != undef) {
       $useStoreConfig = true
     }
     else {
-       $useStoreConfig = false
+      $useStoreConfig = false
     }
   }
 
@@ -83,12 +83,12 @@ define orawls::wlstexec (
 
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
     case $::kernel {
-      Linux: {
-         $java_statement = "java"
-       }
-       SunOS: {
-         $java_statement = "java -d64"
-       }
+      'Linux': {
+        $java_statement = "java"
+      }
+      'SunOS': {
+        $java_statement = "java -d64"
+      }
     }
     $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
 

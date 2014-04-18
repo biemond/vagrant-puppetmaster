@@ -39,20 +39,9 @@ module Puppet
     property  :servers
     property  :migrationbasis
     property  :messagingmode
-
-  private 
-
-    def servers
-      self[:servers]
-    end
-
-    def migrationbasis
-      self[:migrationbasis]
-    end
-
-    def messagingmode
-      self[:messagingmode]
-    end
-
+    property  :datasourceforjobscheduler
+    property  :unicastbroadcastchannel
+    property  :multicastaddress
+    property  :multicastport
   end
 end

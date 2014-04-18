@@ -1,6 +1,7 @@
 # orawls.rb
 require 'rexml/document' 
 require 'facter'
+require 'yaml'
 
 def get_weblogicUser()
   weblogicUser = Facter.value('override_weblogic_user')
@@ -83,51 +84,6 @@ def get_middleware_1212_Home(name)
     return elements
 end 
 
-def get_bsu_patches(name)
-  os = Facter.value(:kernel)
-
-  if ["Linux","SunOS"].include?os
-   if FileTest.exists?(name+'/utils/bsu/patch-client.jar')
-    output2 = Facter::Util::Resolution.exec(get_suCommand()+ get_weblogicUser() + " -c \""+get_javaCommand()+" -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
-    if output2.nil?
-      return "empty"
-    end
-   else
-    return nil
-   end 
-  else
-    return nil 
-  end
-  doc = REXML::Document.new output2
-
-  root = doc.root
-  patches = ""
-  root.elements.each("//patchDesc") do |patch|
-    patches += patch.elements['patchId'].text + ";"
-  end
-  return patches
-
-end
-
-
-def get_opatch_patches(name)
-    Puppet.debug "orawls.rb get_opatch_patches with path: #{name}"
-    #Puppet.debug "orawls.rb opatch command: "+get_suCommand()+get_weblogicUser()+" -c '"+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc "+get_oraInvPath()+"/oraInst.loc'"
-    output3 = Facter::Util::Resolution.exec(get_suCommand()+get_weblogicUser()+" -c '"+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc "+get_oraInvPath()+"/oraInst.loc'")
-
-    opatches = "Patches;"
-    if output3.nil?
-      opatches = "Error;"
-    else 
-      output3.each_line do |li|
-        opatches += li[5, li.index(':')-5 ].strip + ";" if (li['Patch'] and li[': applied on'] )
-      end
-    end
-   
-    return opatches
-end  
-
-
 def get_orainst_loc()
   #puts "get_orainst_loc: "+get_oraInvPath()+"/oraInst.loc"
   if FileTest.exists?(get_oraInvPath()+"/oraInst.loc")
@@ -155,21 +111,6 @@ def get_orainst_products(path)
         str = element.attributes["LOC"]
         unless str.nil? 
           software += str + ";"
-          if str.include? "plugins"
-            #skip EM agent
-          elsif str.include? "agent"
-            #skip EM agent 
-          elsif str.include? "OraPlaceHolderDummyHome"
-            #skip EM agent
-          else
-            home = str.gsub("/","_").gsub("\\","_").gsub("c:","_c").gsub("d:","_d").gsub("e:","_e")
-            output = get_opatch_patches(str)
-            Facter.add("ora_inst_patches#{home}") do
-              setcode do
-                output
-              end
-            end
-          end
         end    
       end
       return software
@@ -558,7 +499,7 @@ def get_domain(domain_path,n)
     libraries   = ""
     root.elements.each("library") do |libs|
       libraries += libs.elements['name'].text + ";"
-      if libs.elements['name'].text == "adf.oracle.domain#1.0@11.1.1.2.0" 
+      if ( libs.elements['name'].text.include? "adf.oracle.domain#1.0" )
          jrfTargets = libs.elements['target'].text
       end 
 
@@ -777,12 +718,6 @@ count = -1
 unless mdw11gHomes.nil?
   mdw11gHomes.each_with_index do |mdw, i|
     count += 1
-    # get bsu patches
-    Facter.add("ora_mdw_#{count}_bsu") do
-      setcode do
-        get_bsu_patches(mdw)
-      end
-    end
     Facter.add("ora_mdw_#{count}") do
       setcode do
         mdw
@@ -803,42 +738,36 @@ end
 
 count_domains = -1
 
-def get_domains(domains_folder,count_domains)
+def get_domains(domain_folder,count_domains)
   # check all domain in a domains folder
-  if FileTest.exists?(domains_folder)
-    output2 = Facter::Util::Resolution.exec('/bin/ls '+domains_folder)
-    unless output2.nil?
-      output2.split(/\r?\n/).each_with_index do |domain, n|
-        count_domains += 1
-        # add domain facts
-        get_domain(domains_folder+'/'+domain,count_domains)
-        # add a full path domain fact
-        Facter.add("ora_mdw_domain_#{count_domains}") do
-          setcode do
-            domains_folder+'/'+domain
-          end
-        end
+  if FileTest.exists?(domain_folder)
+    count_domains += 1
+    # add domain facts
+    get_domain(domain_folder,count_domains)
+    # add a full path domain fact
+    Facter.add("ora_mdw_domain_#{count_domains}") do
+      setcode do
+        domain_folder
       end
-    end   
-    # return the domain counter
-  end  
+    end
+  end
   return count_domains
 end
 
-#get all domains
-unless mdw11gHomes.nil?
-  mdw11gHomes.each_with_index do |mdw, i|
-    count_domains = get_domains(mdw+'/user_projects/domains',count_domains)
-  end 
-end
-unless mdw12cHomes.nil?
-  mdw12cHomes.each_with_index do |mdw, i|
-    count_domains = get_domains(mdw+'/user_projects/domains',count_domains)
-  end 
-end
-domainFolder = Facter.value('override_weblogic_domain_folder')
-unless domainFolder.nil?
-  count_domains = get_domains(domainFolder+'/domains',count_domains)
+# read the domains yaml and analyze domain
+begin
+  entries = YAML.load(File.open("/etc/wls_domains.yaml"))
+  unless entries.nil?
+    domains = entries['domains']
+    unless domains.nil?
+      domains.each { |key, values|
+        Puppet.debug "found #{key} with path #{values}"
+        count_domains = get_domains(values,count_domains)
+      }  
+    end  
+  end
+rescue Exception
+  Puppet.debug "/etc/wls_domains.yaml not found"
 end
 
 Facter.add("ora_mdw_domain_cnt") do

@@ -217,13 +217,15 @@ class java {
   include jdk7
 
   jdk7::install7{ 'jdk1.7.0_51':
-      version              => "7u51" , 
-      fullVersion          => "jdk1.7.0_51",
-      alternativesPriority => 18000, 
-      x64                  => true,
-      downloadDir          => "/data/install",
-      urandomJavaFix       => true,
-      sourcePath           => "puppet:///middleware/",
+      version                   => "7u51" , 
+      fullVersion               => "jdk1.7.0_51",
+      alternativesPriority      => 18000, 
+      x64                       => true,
+      downloadDir               => "/data/install",
+      urandomJavaFix            => true,
+      rsakeySizeFix             => true,
+      cryptographyExtensionFile => "UnlimitedJCEPolicyJDK7.zip",
+      sourcePath                => "puppet:///middleware/",
   }
 
 }

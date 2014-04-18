@@ -22,6 +22,8 @@ hosts:
     ip:                "127.0.0.1"
     host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
 
+orautils::nodeMgrAddressParam:    '10.10.10.20'
+
 
 # when you have just one domain on a server
 domain_name:                "Wls1036"
@@ -49,11 +51,13 @@ pack_domain_instances:
 nodemanager_instances:
   'nodemanager':
      log_output:           *logoutput
+     nodemanager_address:  "10.10.10.20"
+
 
 # startup adminserver for extra configuration
 control_instances:
   'startWLSAdminServer':
-     domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/Wls1036"
+     domain_name:          "Wls1036"
      server_type:          'admin'
      target:               'Server'
      server:               'AdminServer'
@@ -92,6 +96,7 @@ server_instances:
          sslenabled:                     '1'
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
+         jsseenabled:                    '1' 
       'wlsServer2':
          ensure:                         'present'
          arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'
@@ -102,6 +107,7 @@ server_instances:
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
          listenaddress:                  '10.10.10.200'
+         jsseenabled:                    '1' 
       'wlsServer3':
          ensure:                         'present'
          arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer3.out -Dweblogic.Stderr=/data/logs/wlsServer3_err.out'
@@ -112,6 +118,7 @@ server_instances:
          sslenabled:                     '1'
          ssllistenport:                  '8202'
          sslhostnameverificationignored: '1'
+         jsseenabled:                    '1' 
       'wlsServer4':
          ensure:                         'present'
          arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer4.out -Dweblogic.Stderr=/data/logs/wlsServer4_err.out'
@@ -122,6 +129,7 @@ server_instances:
          sslenabled:                     '1'
          ssllistenport:                  '8202'
          sslhostnameverificationignored: '1'
+         jsseenabled:                    '1' 
 
 
 
@@ -316,79 +324,5 @@ jms_topics_instances:
      subdeployment:     'jmsServers'
      timetodeliver:     '-1'
      timetolive:        '300000'
-
-jms_foreign_server_instances:
-    createAQForeignServerJmsModule:
-       weblogic_object_name: "jmsClusterModule/AQForeignServer"
-       log_output:           *logoutput
-       weblogic_type:        "foreignserver"
-       script:               'createJmsForeignServer.py'
-       params:
-          - "jmsModuleName    = 'jmsClusterModule'"
-          - "subDeployment             = 'jmsServers'"
-          - "JNDIInitialContextFactory = 'oracle.jms.AQjmsInitialContextFactory'"
-          - "JNDIpropertyName          = 'datasource'"
-          - "JNDIpropertyValue         = 'jdbc/hrDS'"
-          - "name                      = 'AQForeignServer'"
-    createForeignServerJmsModule:
-       weblogic_object_name: "jmsClusterModule/ForeignServer"
-       log_output:           *logoutput
-       weblogic_type:        "foreignserver"
-       script:               'createJmsForeignServer.py'
-       params:
-          - "jmsModuleName    = 'jmsClusterModule'"
-          - "name              = 'ForeignServer'"
-          - "connectionURL     = 't3://10.10.10.20:7001'"
-
-
-jms_foreign_server_objects_instances:
-    createAQForeignServerObjectJmsModule:
-       weblogic_object_name: "jmsClusterModule/AQForeignServer/TestQueue"
-       log_output:           *logoutput
-       weblogic_type:        "foreignserver_object"
-       script:               'createJmsForeignServerObject.py'
-       params:
-          - "jmsModuleName    = 'jmsClusterModule'"
-          - "fsName             = 'AQForeignServer'"
-          - "fsType             = 'destination'"
-          - "objectName         = 'TestQueue'"
-          - "localJNDI          = 'jms/aq/TestQueue'"
-          - "remoteJNDI         = 'Queues/TestQueue'"
-    createAQForeignServerObjectJmsModule2:
-       weblogic_object_name: "jmsClusterModule/AQForeignServer/XAQueueCF"
-       log_output:           *logoutput
-       weblogic_type:        "foreignserver_object"
-       script:               'createJmsForeignServerObject.py'
-       params:
-          - "jmsModuleName    = 'jmsClusterModule'"
-          - "fsName             = 'AQForeignServer'"
-          - "fsType             = 'cf'"
-          - "objectName         = 'XAQueueCF'"
-          - "localJNDI          = 'jms/XAQueueCF'"
-          - "remoteJNDI         = 'XAQueueConnectionFactory'"
-    createForeignServerObjectJmsModule:
-       weblogic_object_name: "jmsClusterModule/ForeignServer/TestQueue"
-       log_output:           *logoutput
-       weblogic_type:        "foreignserver_object"
-       script:               'createJmsForeignServerObject.py'
-       params:
-          - "jmsModuleName    = 'jmsClusterModule'"
-          - "fsName             = 'ForeignServer'"
-          - "fsType             = 'destination'"
-          - "objectName         = 'TestQueue'"
-          - "localJNDI          = 'jms/local/TestQueue'"
-          - "remoteJNDI         = 'jms/remote/TestQueue'"
-    createForeignServerObjectJmsModule2:
-       weblogic_object_name: "jmsClusterModule/ForeignServer/CF"
-       log_output:           *logoutput
-       weblogic_type:        "foreignserver_object"
-       script:               'createJmsForeignServerObject.py'
-       params:
-          - "jmsModuleName    = 'jmsClusterModule'"
-          - "fsName             = 'ForeignServer'"
-          - "fsType             = 'cf'"
-          - "objectName         = 'CF'"
-          - "localJNDI          = 'jms/local/cf'"
-          - "remoteJNDI         = 'jms/remote/cf'"
 
 

@@ -19,6 +19,7 @@ hosts:
 orautils::osDomainParam:          "Wls1036SoaOsb"
 orautils::osDomainTypeParam:      "soa"
 orautils::osDomainPathParam:      "/opt/oracle/middleware11g/user_projects/domains/Wls1036SoaOsb"
+orautils::nodeMgrAddressParam:    '10.10.10.23'
 
 
 # when you have just one domain on a server
@@ -45,11 +46,12 @@ domain_instances:
 nodemanager_instances:
   'nodemanager':
      log_output:           *logoutput
+     nodemanager_address:  "10.10.10.23"
 
 # startup adminserver for extra configuration
 control_instances:
   'startWLSAdminServer':
-     domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/Wls1036SoaOsb"
+     domain_name:          "Wls1036SoaOsb"
      server_type:          'admin'
      target:               'Server'
      server:               'AdminServer'
