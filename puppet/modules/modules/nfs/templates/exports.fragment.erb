@@ -1,0 +1,4 @@
+<% @clients.each do |client| -%>
+<%= @path %> <%= client %>(<% if @options.is_a?(Array) %><%= @options.join(',') %><% else %><%= @options %><% end %>)
+<% end -%>
+

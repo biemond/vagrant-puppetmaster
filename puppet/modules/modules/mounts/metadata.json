@@ -1,0 +1,30 @@
+{
+  "name": "AlexCline-mounts",
+  "version": "0.3.1",
+  "source": "UNKNOWN",
+  "author": "Alex Cline <alex.cline@gmail.com>",
+  "license": "Apache License, Version 2.0",
+  "summary": "The mounts module will help manage mount points on linux systems.",
+  "description": "The mounts module will help manage mount points on linux systems.",
+  "project_page": "https://github.com/AlexCline/fstab",
+  "dependencies": [
+    {
+      "name": "AlexCline/fstab",
+      "version_requirement": ">= 0.1.0"
+    },
+    {
+      "name": "AlexCline/dirtree",
+      "version_requirement": ">= 0.1.1"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "Modulefile": "48bb22c91769ea858cda404906e2b3a9",
+    "README.md": "53e8f1bd2e2aa5db88d85c334a61c6dd",
+    "manifests/init.pp": "d8cee700de1bbe2466c40a3166781575",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "tests/init.pp": "7b562932df0e12facdb5aa514dcc79a2"
+  }
+}

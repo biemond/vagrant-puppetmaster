@@ -1,0 +1,51 @@
+{
+  "name": "jbeard-nfs",
+  "version": "0.1.3",
+  "source": "https://github.com/jbeard6/jbeard-nfs",
+  "author": "jbeard",
+  "license": "Apache License, Version 2.0",
+  "summary": "NFS Client and Server",
+  "description": "This module installs an NFS client and server and configures the exports.",
+  "project_page": "https://github.com/jbeard6/jbeard-nfs",
+  "dependencies": [
+    {
+      "name": "jbeard/portmap",
+      "version_requirement": ">= 0.1.4"
+    },
+    {
+      "name": "puppetlabs/concat",
+      "version_requirement": ">= 1.0.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.0.0"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "Contributors.txt": "03ff4f048087478aa590548f7489f81b",
+    "LICENSE.txt": "3b83ef96387f14655fc854ddc3c6bd57",
+    "Modulefile": "d5a00577d161e85354d7db2a24d550fa",
+    "README.md": "ac47ac6c7ab917c0dce73cd15d5a5f5f",
+    "manifests/client/debian/packages.pp": "d86dd8a69cd1009c2d763724149a8043",
+    "manifests/client/debian.pp": "ca3d49545bfea8ef46e0c77727e0584c",
+    "manifests/client/rhel/packages.pp": "c0e8e63e1595166c8d3a678670e8cdcd",
+    "manifests/client/rhel.pp": "2a9eaf7a49f543e18d387f406b8cb4c0",
+    "manifests/client.pp": "182907ab37045ede7ae737bced8453fd",
+    "manifests/export.pp": "02e6b4be84b478e4bd8712fcbc61d650",
+    "manifests/init.pp": "f026c5803b22a3e1251effebbefa1018",
+    "manifests/server/rhel/config.pp": "747943bd21e6575c02792ac2e580bd09",
+    "manifests/server/rhel/services.pp": "17cdd33cd2ea1aa4550146845fed4585",
+    "manifests/server/rhel.pp": "2fbce71eaac9069ee52bb2634d173298",
+    "manifests/server/ubuntu/config.pp": "988dfbc243d205bd347f55e7a7c7cc29",
+    "manifests/server/ubuntu/packages.pp": "b2d3e1a17e6908cbbca3cc04f891f261",
+    "manifests/server/ubuntu/services.pp": "8e279d64f4087a9540bdf5bebc98aae3",
+    "manifests/server/ubuntu.pp": "5c8ccc2c48968c852a0e92a05c0c49f7",
+    "manifests/server.pp": "5fc41afeb113d104c4be357f54b76583",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "templates/exports.fragment.erb": "ae1f27a1708883f19d495e7a4664c4a6",
+    "tests/init.pp": "52f993d28f2ada667014bf856721c624"
+  }
+}

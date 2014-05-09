@@ -1,0 +1,36 @@
+{
+  "author": "jbeard",
+  "checksums": {
+    "Contributors.txt": "e757d39e1ea5fc01829a258480536c58",
+    "LICENSE.txt": "3b83ef96387f14655fc854ddc3c6bd57",
+    "Modulefile": "31061c0336a42b974056e9d3cd61f331",
+    "README.md": "d187578583fdd56089096f2732dd201f",
+    "manifests/debian/config.pp": "9b4fe95f3685f38fa8d8be599942afe3",
+    "manifests/debian/packages.pp": "43c4616b0c781d798e853ea3ead38966",
+    "manifests/debian/services.pp": "41173b470b88be6502326bbe23eb4033",
+    "manifests/debian.pp": "6be478ce94a704144918302f1eea4b7d",
+    "manifests/init.pp": "7c1c7cdd82ca2bd4883027ea95cb7eb6",
+    "manifests/params.pp": "b5d1955916a120d44ec7291408554f38",
+    "manifests/rhel/packages.pp": "957c6f1c16280e9dc276049e32298455",
+    "manifests/rhel/services.pp": "9c3dd2a60dd5f88f167d6a79fe1ace5d",
+    "manifests/rhel.pp": "30c971080ee636f5e84daf91eeb97e84",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "tests/init.pp": "9f42af654b4b0280c326d5ab752adcf5"
+  },
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.0.0"
+    }
+  ],
+  "description": "This module installs and controls the execution of the portmap/rpcbind daemon.",
+  "license": "Apache License, Version 2.0",
+  "name": "jbeard-portmap",
+  "project_page": "https://github.com/jbeard6/jbeard-portmap",
+  "source": "https://github.com/jbeard6/jbeard-portmap",
+  "summary": "Module controlling the portmap/rpcbind daemon.",
+  "types": [
+
+  ],
+  "version": "0.1.5"
+}
