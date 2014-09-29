@@ -33,6 +33,11 @@ domain_wls_password:        "weblogic1"
 domain_user_config_file:    "/home/oracle/oracle-Wls1036-WebLogicConfig.properties"
 domain_user_key_file:       "/home/oracle/oracle-Wls1036-WebLogicKey.properties"
 
+wls_os_user:              &wls_os_user              "oracle"
+wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware11g/wlserver_10.3"
+wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware11g"
+
 
 # create a standard domain
 domain_instances:
