@@ -10,22 +10,23 @@ describe tablespace do
   let(:attribute) {@resource.property(attribute_name)}
 
 
-  before :each do
+  before(:each) do
     @class = tablespace
     @provider = double 'provider'
     allow(@provider).to receive(:name).and_return(:simple)
-    allow(Puppet::Type::Tablespace).to receive(:defaultprovider).and_return @provider
+    allow(@class).to receive(:defaultprovider).and_return @provider
+    class Puppet::Type::Tablespace; def self.default_sid; 'TEST'; end; end
     @resource = @class.new({:name  => 'PII_DATA'})
   end
 
 
-  it 'should have :name be its namevar' do
-    @class.key_attributes.should == [:name]
+  it 'should have :name and :tablespace_name as its namevar' do
+    expect(@class.key_attributes).to eq([:name, :tablespace_name])
   end
 
-  describe ':name' do
+  describe ':tablespace_name' do
 
-    let(:attribute_class) { @class.attrclass(:name) }
+    let(:attribute_class) { @class.attrclass(:tablespace_name) }
 
     it 'should pick its value from element TABLESPACE_NAME' do
       raw_resource = InstancesResults['TABLESPACE_NAME','MY_NAME']
@@ -38,21 +39,21 @@ describe tablespace do
     end
 
     it 'should accept a name' do
-      @resource[:name] = 'PII_DATA'
-      expect(@resource[:name]).to eq 'PII_DATA'
+      @resource[:tablespace_name] = 'PII_DATA'
+      expect(@resource[:tablespace_name]).to eq 'PII_DATA'
     end
 
     it 'should munge to uppercase' do
-      @resource[:name] = 'system'
-      expect(@resource[:name]).to eq 'SYSTEM'
+      @resource[:tablespace_name] = 'system'
+      expect(@resource[:tablespace_name]).to eq 'SYSTEM'
     end
 
     it 'should not accept a name with whitespace' do
-      lambda { @resource[:name] = 'a a' }.should raise_error(Puppet::Error)
+      expect { @resource[:tablespace_name] = 'a a' }.to raise_error(Puppet::Error)
     end
 
     it 'should not accept an empty name' do
-      lambda { @resource[:name] = '' }.should raise_error(Puppet::Error)
+      expect { @resource[:tablespace_name] = '' }.to raise_error(Puppet::Error)
     end
   end
 
@@ -123,18 +124,25 @@ describe tablespace do
 
 
       it 'should not accept true' do
-        lambda { @resource[:logging] = 'true' }.should raise_error(Puppet::Error)
+        expect { @resource[:logging] = 'true' }.to raise_error(Puppet::Error)
       end
 
       it 'should not accept false' do
-        lambda { @resource[:logging] = 'false' }.should raise_error(Puppet::Error)
+        expect { @resource[:logging] = 'false' }.to raise_error(Puppet::Error)
       end
 
       it 'should not accept any other string then yes or no' do
-        lambda { @resource[:logging] = 'hdjhdh' }.should raise_error(Puppet::Error)
+        expect { @resource[:logging] = 'hdjhdh' }.to raise_error(Puppet::Error)
       end
     end
 
+  end
+
+  describe ':timeout' do
+
+    it 'should have :timeout attribute' do
+      expect(@class.parameters).to include(:timeout)
+    end
   end
 
 
@@ -145,7 +153,8 @@ describe tablespace do
       :result_identifier  => 'BYTES',
       :raw_value          => '1000',
       :test_value         => 1000,
-      :apply_text         => 'datafile size 1000'
+      :create_text        => 'datafile size 1000',
+      :modify_text        => 'resize 1000'
     }
   end
 
@@ -156,7 +165,6 @@ describe tablespace do
       :result_identifier  => 'FILE_NAME',
       :raw_value          => 'a_file_name.txt',
       :test_value         => 'a_file_name.txt',
-      :apply_text         => "datafile 'a_file_name.txt'"
     }
 
 
@@ -187,8 +195,7 @@ describe tablespace do
       :attribute          => :segment_space_management,
       :result_identifier  => 'SEGMEN',
       :raw_value          => 'AUTO',
-      :test_value         => :auto,
-      :apply_text         => "segment space management auto"
+      :test_value         => :auto
     }
 
   end
@@ -223,8 +230,9 @@ describe tablespace do
     it_behaves_like 'an easy_type attribute', {
       :attribute          => :next,
       :raw_resource       => { 'BLOCK_SIZE' => '1024', 'INCREMENT_BY' => '100'},
-      :test_value         => 102400,
-      :apply_text         => 'next 102400'
+      :test_value         => 102400
+      # :apply_text         => 'next 102400'
+      # TODO: add tests to see if this get's added when extendmanagement is on
     }
 
   end
@@ -235,8 +243,9 @@ describe tablespace do
       :attribute          => :max_size,
       :result_identifier  => 'MAX_SIZE',
       :raw_value          => '1000000.123',
-      :test_value         => 1000000,
-      :apply_text         => "maxsize 1000000"
+      :test_value         => 1000000
+      # :apply_text         => "maxsize 1000000"
+      # TODO: add tests to see if this get's added when extendmanagement is on
     }
 
   end

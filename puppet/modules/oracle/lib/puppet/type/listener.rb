@@ -34,7 +34,7 @@ module Puppet
 
     newparam(:name) do
       desc <<-EOT
-        The name of the listner to run.
+        The sid of the listner to run.
       EOT
       isnamevar
     end

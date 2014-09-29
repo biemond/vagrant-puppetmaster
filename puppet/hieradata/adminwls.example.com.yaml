@@ -35,12 +35,30 @@ domain_wls_password:        "weblogic1"
 domain_user_config_file:    "/home/oracle/oracle-Wls1036-WebLogicConfig.properties"
 domain_user_key_file:       "/home/oracle/oracle-Wls1036-WebLogicKey.properties"
 
+
+wls_os_user:              &wls_os_user              "oracle"
+wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware11g/wlserver_10.3"
+wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware11g"
+
+
+
 # create a standard domain
 domain_instances:
   'wlsDomain':
      domain_template:          "standard"
      development_mode:         false
      log_output:               *logoutput
+
+
+wls_setting_instances:
+  'default':
+    user:               *wls_os_user
+    weblogic_home_dir:  *wls_weblogic_home_dir
+    connect_url:        "t3://10.10.10.20:7001"
+    weblogic_user:      *wls_weblogic_user
+    weblogic_password:  *domain_wls_password
+    require:            Orawls::Domain[wlsDomain]
 
 # pack domains
 pack_domain_instances:
@@ -96,7 +114,8 @@ server_instances:
          sslenabled:                     '1'
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
-         jsseenabled:                    '1' 
+         jsseenabled:                    '1'
+         require:                        Wls_machine[Node1]
       'wlsServer2':
          ensure:                         'present'
          arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'
@@ -107,7 +126,8 @@ server_instances:
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
          listenaddress:                  '10.10.10.200'
-         jsseenabled:                    '1' 
+         jsseenabled:                    '1'
+         require:                        Wls_machine[Node2]
       'wlsServer3':
          ensure:                         'present'
          arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer3.out -Dweblogic.Stderr=/data/logs/wlsServer3_err.out'
@@ -118,7 +138,8 @@ server_instances:
          sslenabled:                     '1'
          ssllistenport:                  '8202'
          sslhostnameverificationignored: '1'
-         jsseenabled:                    '1' 
+         jsseenabled:                    '1'
+         require:                        Wls_machine[Node1]
       'wlsServer4':
          ensure:                         'present'
          arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer4.out -Dweblogic.Stderr=/data/logs/wlsServer4_err.out'
@@ -129,7 +150,8 @@ server_instances:
          sslenabled:                     '1'
          ssllistenport:                  '8202'
          sslhostnameverificationignored: '1'
-         jsseenabled:                    '1' 
+         jsseenabled:                    '1'
+         require:                        Wls_machine[Node2]
 
 
 
@@ -138,191 +160,172 @@ cluster_instances:
         ensure:         'present'
         messagingmode:  'unicast'
         migrationbasis: 'consensus'
-        servers:        'wlsServer1,wlsServer2'
+        servers:
+          - 'wlsServer1'
+          - 'wlsServer2'
+        require:
+          - Wls_server[wlsServer1]
+          - Wls_server[wlsServer2]
     'WebCluster2':
         ensure:         'present'
         messagingmode:  'unicast'
         migrationbasis: 'consensus'
-        servers:        'wlsServer3,wlsServer4'
-
-datasource_instances:
-    'hrDS':
-      ensure:                      'present'
-      drivername:                  'oracle.jdbc.xa.client.OracleXADataSource'
-      extraproperties:             'SendStreamAsBlob,oracle.net.CONNECT_TIMEOUT'
-      extrapropertiesvalues:       'true,10000'
-      globaltransactionsprotocol:  'TwoPhaseCommit'
-      initialcapacity:             '1'
-      jndinames:                   'jdbc/hrDS'
-      maxcapacity:                 '15'
-      target:                      'WebCluster,WebCluster2'
-      targettype:                  'Cluster,Cluster'
-      testtablename:               'SQL SELECT 1 FROM DUAL'
-      url:                         "jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com"
-      user:                        'hr'
-      usexa:                       '1'
-    'jmsDS':
-      ensure:                      'present'
-      drivername:                  'com.mysql.jdbc.Driver'
-      globaltransactionsprotocol:  'None'
-      initialcapacity:             '1'
-      jndinames:                   'jmsDS'
-      maxcapacity:                 '15'
-      target:                      'WebCluster'
-      targettype:                  'Cluster'
-      testtablename:               'SQL SELECT 1'
-      url:                         'jdbc:mysql://10.10.10.10:3306/jms'
-      user:                        'jms'
-      usexa:                       '1'
-
-file_persistence_store_instances:
-  'jmsFile1':
-    ensure:         'present'
-    directory:      'persistence1'
-    target:         'wlsServer1'
-    targettype:     'Server'
-  'jmsFile2':
-    ensure:         'present'
-    directory:      'persistence2'
-    target:         'wlsServer2'
-    targettype:     'Server'
-  'jmsFileSAFAgent1':
-    ensure:         'present'
-    directory:      'persistenceSaf1'
-    target:         'wlsServer1'
-    targettype:     'Server'
-
-jmsserver_instances:
-   'jmsServer1':
-     ensure:              'present'
-     target:              'wlsServer1'
-     targettype:          'Server'
-     persistentstore:     'jmsFile1'
-     persistentstoretype: 'FileStore'
-   'jmsServer2':
-     ensure:              'present'
-     target:              'wlsServer2'
-     targettype:          'Server'
-   'jmsServer3':
-     ensure:              'present'
-     target:              'wlsServer3'
-     targettype:          'Server'
-   'jmsServer4':
-     ensure:              'present'
-     target:              'wlsServer4'
-     targettype:          'Server'
-
-safagent_instances:
-    'jmsSAFAgent1':
-          ensure:              'present'
-          target:              'wlsServer1'
-          targettype:          'Server'
-          servicetype:         'Sending-only'
-          persistentstore:     'jmsFileSAFAgent1'
-          persistentstoretype: 'FileStore'
-    'jmsSAFAgent2':
-          ensure:              'present'
-          target:              'wlsServer2'
-          targettype:          'Server'
-          servicetype:         'Both'
-
-jms_modules_instances:
-   'jmsClusterModule':
-     ensure:      'present'
-     target:      'WebCluster'
-     targettype:  'Cluster'
+        servers:
+          - 'wlsServer3'
+          - 'wlsServer4'
+        require:
+          - Wls_server[wlsServer3]
+          - Wls_server[wlsServer4]
 
 
-jms_subdeployments_instances:
-   'jmsClusterModule:jmsServers':
-      ensure:     'present'
-      target:     'jmsServer1,jmsServer2'
-      targettype: 'JMSServer,JMSServer'
-   'jmsClusterModule:wlsServers':
-      ensure:     'present'
-      target:     'WebCluster'
-      targettype: 'Cluster'
+# file_persistence_store_instances:
+#   'jmsFile1':
+#     ensure:         'present'
+#     directory:      'persistence1'
+#     target:         'wlsServer1'
+#     targettype:     'Server'
+#   'jmsFile2':
+#     ensure:         'present'
+#     directory:      'persistence2'
+#     target:         'wlsServer2'
+#     targettype:     'Server'
+#   'jmsFileSAFAgent1':
+#     ensure:         'present'
+#     directory:      'persistenceSaf1'
+#     target:         'wlsServer1'
+#     targettype:     'Server'
 
-jms_quotas_instances:
-   'jmsClusterModule:QuotaBig':
-      ensure:           'present'
-      bytesmaximum:     '9223372036854775807'
-      messagesmaximum:  '9223372036854775807'
-      policy:           'FIFO'
-      shared:           '1'
-   'jmsClusterModule:QuotaLow':
-      ensure:           'present'
-      bytesmaximum:     '20000000000'
-      messagesmaximum:  '9223372036854775807'
-      policy:           'FIFO'
-      shared:           '0'
+# jmsserver_instances:
+#    'jmsServer1':
+#      ensure:              'present'
+#      target:              'wlsServer1'
+#      targettype:          'Server'
+#      persistentstore:     'jmsFile1'
+#      persistentstoretype: 'FileStore'
+#    'jmsServer2':
+#      ensure:              'present'
+#      target:              'wlsServer2'
+#      targettype:          'Server'
+#    'jmsServer3':
+#      ensure:              'present'
+#      target:              'wlsServer3'
+#      targettype:          'Server'
+#    'jmsServer4':
+#      ensure:              'present'
+#      target:              'wlsServer4'
+#      targettype:          'Server'
+
+# safagent_instances:
+#     'jmsSAFAgent1':
+#           ensure:              'present'
+#           target:              'wlsServer1'
+#           targettype:          'Server'
+#           servicetype:         'Sending-only'
+#           persistentstore:     'jmsFileSAFAgent1'
+#           persistentstoretype: 'FileStore'
+#     'jmsSAFAgent2':
+#           ensure:              'present'
+#           target:              'wlsServer2'
+#           targettype:          'Server'
+#           servicetype:         'Both'
+
+# jms_modules_instances:
+#    'jmsClusterModule':
+#      ensure:      'present'
+#      target:      'WebCluster'
+#      targettype:  'Cluster'
 
 
-jms_cf_instances:
-  'jmsClusterModule:cf':
-      ensure:             'present'
-      jmsmodule:          'jmsClusterModule'
-      defaulttargeting:   '0'
-      jndiname:           'jms/cf'
-      subdeployment:      'wlsServers'
-      transactiontimeout: '3600'
-      xaenabled:          '0'
-  'jmsClusterModule:cf2':
-      ensure:             'present'
-      jmsmodule:          'jmsClusterModule'
-      defaulttargeting:   '1'
-      jndiname:           'jms/cf2'
-      transactiontimeout: '3600'
-      xaenabled:          '1'
+# jms_subdeployments_instances:
+#    'jmsClusterModule:jmsServers':
+#       ensure:     'present'
+#       target:     'jmsServer1,jmsServer2'
+#       targettype: 'JMSServer,JMSServer'
+#    'jmsClusterModule:wlsServers':
+#       ensure:     'present'
+#       target:     'WebCluster'
+#       targettype: 'Cluster'
 
-jms_queues_instances:
-   'jmsClusterModule:ErrorQueue':
-     ensure:                   'present'
-     distributed:              '1'
-     expirationpolicy:         'Discard'
-     jndiname:                 'jms/ErrorQueue'
-     redeliverydelay:          '-1'
-     redeliverylimit:          '-1'
-     subdeployment:            'jmsServers'
-     defaulttargeting:         '0'
-     timetodeliver:            '-1'
-     timetolive:               '-1'
-   'jmsClusterModule:Queue1':
-     ensure:                   'present'
-     distributed:              '1'
-     errordestination:         'ErrorQueue'
-     expirationpolicy:         'Redirect'
-     jndiname:                 'jms/Queue1'
-     redeliverydelay:          '2000'
-     redeliverylimit:          '3'
-     subdeployment:            'jmsServers'
-     defaulttargeting:         '0'
-     timetodeliver:            '-1'
-     timetolive:               '300000'
-   'jmsClusterModule:Queue2':
-     ensure:                   'present'
-     distributed:              '1'
-     expirationloggingpolicy:  '%header%%properties%'
-     expirationpolicy:         'Log'
-     jndiname:                 'jms/Queue2'
-     redeliverydelay:          '2000'
-     redeliverylimit:          '3'
-     subdeployment:            'jmsServers'
-     defaulttargeting:         '0'
-     timetodeliver:            '-1'
-     timetolive:               '300000'
+# jms_quotas_instances:
+#    'jmsClusterModule:QuotaBig':
+#       ensure:           'present'
+#       bytesmaximum:     '9223372036854775807'
+#       messagesmaximum:  '9223372036854775807'
+#       policy:           'FIFO'
+#       shared:           '1'
+#    'jmsClusterModule:QuotaLow':
+#       ensure:           'present'
+#       bytesmaximum:     '20000000000'
+#       messagesmaximum:  '9223372036854775807'
+#       policy:           'FIFO'
+#       shared:           '0'
 
-jms_topics_instances:
-   'jmsClusterModule:Topic1':
-     ensure:            'present'
-     defaulttargeting:  '0'
-     distributed:       '1'
-     expirationpolicy:  'Discard'
-     jndiname:          'jms/Topic1'
-     redeliverydelay:   '2000'
-     redeliverylimit:   '2'
-     subdeployment:     'jmsServers'
-     timetodeliver:     '-1'
-     timetolive:        '300000'
+
+# jms_cf_instances:
+#   'jmsClusterModule:cf':
+#       ensure:             'present'
+#       jmsmodule:          'jmsClusterModule'
+#       defaulttargeting:   '0'
+#       jndiname:           'jms/cf'
+#       subdeployment:      'wlsServers'
+#       transactiontimeout: '3600'
+#       xaenabled:          '0'
+#   'jmsClusterModule:cf2':
+#       ensure:             'present'
+#       jmsmodule:          'jmsClusterModule'
+#       defaulttargeting:   '1'
+#       jndiname:           'jms/cf2'
+#       transactiontimeout: '3600'
+#       xaenabled:          '1'
+
+# jms_queues_instances:
+#    'jmsClusterModule:ErrorQueue':
+#      ensure:                   'present'
+#      distributed:              '1'
+#      expirationpolicy:         'Discard'
+#      jndiname:                 'jms/ErrorQueue'
+#      redeliverydelay:          '-1'
+#      redeliverylimit:          '-1'
+#      subdeployment:            'jmsServers'
+#      defaulttargeting:         '0'
+#      timetodeliver:            '-1'
+#      timetolive:               '-1'
+#    'jmsClusterModule:Queue1':
+#      ensure:                   'present'
+#      distributed:              '1'
+#      errordestination:         'ErrorQueue'
+#      expirationpolicy:         'Redirect'
+#      jndiname:                 'jms/Queue1'
+#      redeliverydelay:          '2000'
+#      redeliverylimit:          '3'
+#      subdeployment:            'jmsServers'
+#      defaulttargeting:         '0'
+#      timetodeliver:            '-1'
+#      timetolive:               '300000'
+#    'jmsClusterModule:Queue2':
+#      ensure:                   'present'
+#      distributed:              '1'
+#      expirationloggingpolicy:  '%header%%properties%'
+#      expirationpolicy:         'Log'
+#      jndiname:                 'jms/Queue2'
+#      redeliverydelay:          '2000'
+#      redeliverylimit:          '3'
+#      subdeployment:            'jmsServers'
+#      defaulttargeting:         '0'
+#      timetodeliver:            '-1'
+#      timetolive:               '300000'
+
+# jms_topics_instances:
+#    'jmsClusterModule:Topic1':
+#      ensure:            'present'
+#      defaulttargeting:  '0'
+#      distributed:       '1'
+#      expirationpolicy:  'Discard'
+#      jndiname:          'jms/Topic1'
+#      redeliverydelay:   '2000'
+#      redeliverylimit:   '2'
+#      subdeployment:     'jmsServers'
+#      timetodeliver:     '-1'
+#      timetolive:        '300000'
 
 

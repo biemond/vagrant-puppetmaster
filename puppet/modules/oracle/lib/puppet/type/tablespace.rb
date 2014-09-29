@@ -2,12 +2,15 @@ require 'pathname'
 $:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
 $:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
-require 'utils/oracle_access'
+require 'ora_utils/oracle_access'
+require 'ora_utils/title_parser'
+
 
 module Puppet
   newtype(:tablespace) do
     include EasyType
-    include ::Utils::OracleAccess
+    include ::OraUtils::OracleAccess
+    extend ::OraUtils::TitleParser
 
     desc "This resource allows you to manage an Oracle tablespace."
 
@@ -15,61 +18,48 @@ module Puppet
 
     ensurable
 
+    to_get_raw_resources do
+      sql_on_all_sids(template('puppet:///modules/oracle/tablespace_index.sql', binding))
+    end
+
     on_create do | command_builder |
-      "create #{ts_type} tablespace \"#{name}\""
+      base_command = "create #{contents} #{ts_type} tablespace \"#{tablespace_name}\""
+      base_command << " segment space management #{segment_space_management}" if segment_space_management
+      base_command
+      command_builder.add(base_command, :sid => sid)
     end
 
     on_modify do | command_builder |
-      "alter tablespace \"#{name}\""
+      command_builder.add("alter tablespace \"#{tablespace_name}\"", :sid => sid)
     end
 
     on_destroy do | command_builder |
-      "drop tablespace \"#{name}\" including contents and datafiles"
+      command_builder.add("drop tablespace \"#{tablespace_name}\" including contents and datafiles", :sid => sid)
     end
 
-    to_get_raw_resources do
-      sql %q{select 
-        t.tablespace_name,
-        logging,
-        extent_management,
-        segment_space_management,
-        bigfile,
-        file_name,
-        to_char(increment_by, '9999999999999999999') "INCREMENT_BY",
-        to_char(block_size, '9999999999999999999') "BLOCK_SIZE",
-        autoextensible,
-        bytes,
-        to_char(maxbytes, '9999999999999999999') "MAX_SIZE"
-      from 
-        dba_tablespaces t, 
-        dba_data_files f 
-      where
-        t.tablespace_name = f.tablespace_name
-      }
-    end
+    map_title_to_sid(:tablespace_name) { /^((.*?\/)?(.*)?)$/}
 
     parameter :name
-    property  :logging
+    parameter :tablespace_name
+    parameter :sid
+
+    parameter :timeout
+    property  :bigfile
     property  :datafile
     property  :size
-    group(:autoextend_info) do
-      property :autoextend
-      property :next
-      property :max_size
+    group(:autoextend_group) do
+      property  :autoextend
+      property  :next
+      property  :max_size
     end
-    property :extent_management
-    property :segment_space_management
-    property :bigfile
-
+    property  :extent_management
+    property  :segment_space_management
+    property  :logging
+    property  :contents
 
     def ts_type
-      if self['bigfile'] == :yes
-        'bigfile'
-      else
-        'smallfile'
-      end
+      (self['bigfile'] == :yes) ? 'bigfile' : 'smallfile'
     end
-
 
   end
 end

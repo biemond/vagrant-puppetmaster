@@ -1,14 +1,14 @@
-require 'utils/oracle_access'
+require 'ora_utils/oracle_access'
 
 Puppet::Type.type(:listener).provide(:listener) do
-  include Utils::OracleAccess
+  include OraUtils::OracleAccess
 
   def self.instances
     []
   end
 
   def listener( action)
-    db_sid = oratab.first[:sid]
+    db_sid = resource.name
     command = "su - oracle -c 'export ORACLE_SID=#{db_sid};export ORAENV_ASK=NO;. oraenv;lsnrctl #{action}'"
     execute command, :failonfail => false, :override_locale => false, :squelch => true
   end

@@ -2,7 +2,8 @@ require 'pathname'
 $:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
 $:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
-require 'utils/oracle_access'
+require 'ora_utils/oracle_access'
+require 'ora_utils/title_parser'
 
 module Puppet
   #
@@ -11,7 +12,8 @@ module Puppet
   #
   newtype(:role) do
     include EasyType
-    include ::Utils::OracleAccess
+    include ::OraUtils::OracleAccess
+    extend ::OraUtils::TitleParser
 
     desc "This resource allows you to manage a role in an Oracle database."
 
@@ -20,24 +22,27 @@ module Puppet
     ensurable
 
     to_get_raw_resources do
-      sql "select * from dba_roles"
+      sql_on_all_sids "select * from dba_roles"
     end
 
     on_create do | command_builder |
-    	"create role #{name}"
+      command_builder.add("create role #{role_name}", :sid => sid)
     end
 
     on_modify do | command_builder |
-      "alter role#{name}"
+      command_builder.add("alter role# {role_name}", :sid => sid)
     end
 
     on_destroy do | command_builder |
-      "drop role#{name}"
+      command_builder.add("drop role #{role_name}", :sid => sid)
     end
 
-    parameter :name
-    property  :password
+    map_title_to_sid(:role_name) { /^((.*?\/)?(.*)?)$/}
 
+    parameter :name
+    parameter :role_name
+    parameter :sid
+    property  :password
 
   end
 end

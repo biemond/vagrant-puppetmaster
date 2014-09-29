@@ -11,7 +11,7 @@ newproperty(:next) do
   end
 
   on_apply do | command_builder|
-    "next #{resource[:next]}"
+    "next #{resource[:next]}" if resource[:autoextend] == :on
   end
 
 end

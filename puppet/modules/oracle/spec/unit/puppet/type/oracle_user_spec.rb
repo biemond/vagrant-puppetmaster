@@ -14,18 +14,19 @@ describe oracle_user do
     @class = oracle_user
     @provider = double 'provider'
     allow(@provider).to receive(:name).and_return(:simple)
-    allow(Puppet::Type::Oracle_user).to receive(:defaultprovider).and_return @provider
+    allow(@class).to receive(:defaultprovider).and_return @provider
+    class Puppet::Type::Oracle_user; def self.default_sid; 'TEST'; end; end
     @resource = @class.new({:name  => 'SCOTT'})
   end
 
 
-  it 'should have :name be its namevar' do
-    @class.key_attributes.should == [:name]
+  it 'should have :name and :username, as its namevar' do
+    expect( @class.key_attributes).to eq([:name, :username])
   end
 
   describe ':name' do
 
-    let(:attribute_class) { @class.attrclass(:name) }
+    let(:attribute_class) { @class.attrclass(:username) }
 
     it 'should pick its value from element USERNAME' do
       raw_resource = InstancesResults['USERNAME','SCOTT']
@@ -33,26 +34,26 @@ describe oracle_user do
     end
 
     it 'should raise an error when name not found in raw_results' do
-      raw_resource = InstancesResults['NO_USERNAME','SCOTT']
+      raw_resource = InstancesResults['NO_USERNAME','SCOTT','SID','TEST']
       expect{attribute_class.translate_to_resource(raw_resource)}.to raise_error(RuntimeError)
     end
 
     it 'should accept a name' do
-      @resource[:name] = 'SCOTT'
-      expect(@resource[:name]).to eq 'SCOTT'
+      @resource[:username] = 'SCOTT'
+      expect(@resource[:username]).to eq 'SCOTT'
     end
 
     it 'should munge to uppercase' do
-      @resource[:name] = 'scott'
-      expect(@resource[:name]).to eq 'SCOTT'
+      @resource[:username] = 'scott'
+      expect(@resource[:username]).to eq 'SCOTT'
     end
 
     it 'should not accept a name with whitespace' do
-      lambda { @resource[:name] = 'a a' }.should raise_error(Puppet::Error)
+      expect { @resource[:username] = 'a a' }.to raise_error(Puppet::Error)
     end
 
     it 'should not accept an empty name' do
-      lambda { @resource[:name] = '' }.should raise_error(Puppet::Error)
+      expect { @resource[:username] = '' }.to raise_error(Puppet::Error)
     end
   end
 

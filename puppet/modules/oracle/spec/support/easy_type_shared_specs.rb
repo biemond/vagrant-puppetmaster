@@ -4,6 +4,8 @@ shared_examples "an easy_type attribute" do |test_attributes|
   result_identifier   = test_attributes[:result_identifier]
   test_value          = test_attributes[:test_value]
   apply_text          = test_attributes[:apply_text]
+  create_text         = test_attributes[:create_text]
+  modify_text         = test_attributes[:modify_text]
   raw_value           = test_attributes[:raw_value]
   test_value_string   = test_attributes[:test_value_string]
   raw_resource        = test_attributes[:raw_resource]
@@ -56,5 +58,34 @@ shared_examples "an easy_type attribute" do |test_attributes|
 
       end
     end
+
+    if create_text
+      context "on creating the resource" do
+
+        before do
+          @resource[attribute_name] = test_value
+        end
+
+        it "returns #{create_text}" do
+          expect(attribute.on_create(nil)).to eq create_text
+        end
+
+      end
+    end
+
+    if modify_text
+      context "on modifying the resource" do
+
+        before do
+          @resource[attribute_name] = test_value
+        end
+
+        it "returns #{modify_text}" do
+          expect(attribute.on_modify(nil)).to eq modify_text
+        end
+      end
+    end
+
+
   end
 end

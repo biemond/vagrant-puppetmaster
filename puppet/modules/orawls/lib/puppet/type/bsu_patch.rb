@@ -1,11 +1,11 @@
 module Puppet
   newtype(:bsu_patch) do
-    desc "This is the WebLogic Patch process called BSU"
+    desc 'This is the WebLogic Patch process called BSU'
 
     newproperty(:ensure) do
-      desc "Whether a patch should be applied."
+      desc 'Whether a patch should be applied.'
 
-      newvalue(:present, :event => :bsu_installed, :invalidate_refreshes => true) do
+      newvalue(:present, :event => :bsu_installed) do
         provider.present
       end
 
@@ -14,7 +14,7 @@ module Puppet
       end
 
       aliasvalue(:installed, :present)
-      aliasvalue(:purged   , :absent)
+      aliasvalue(:purged, :absent)
 
       def retrieve
         provider.status
@@ -69,7 +69,6 @@ module Puppet
         The BSU pathc download dir folder.
       EOT
     end
-
 
   end
 end

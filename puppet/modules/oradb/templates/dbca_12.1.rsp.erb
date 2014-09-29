@@ -243,7 +243,7 @@ SID = "<%= @dbName %>"
 # Default value : None
 # Mandatory     : No (Yes for RAC database-centric database )
 #-----------------------------------------------------------------------------
-#NODELIST=
+NODELIST=<%= @cluster_nodes %>
 
 #-----------------------------------------------------------------------------
 # Name          : TEMPLATENAME
@@ -324,6 +324,7 @@ EMCONFIGURATION = "<%= @emConfiguration %>"
 # Mandatory     : Yes, if EMCONFIGURATION is specified
 #-----------------------------------------------------------------------------
 #DBSNMPPASSWORD = "password"
+DBSNMPPASSWORD = "<%= @dbSnmpPassword %>"
 
 #-----------------------------------------------------------------------------
 # Name          : CENTRALAGENT
@@ -459,7 +460,7 @@ RECOVERYAREADESTINATION="<%= @recoveryAreaDestination %>"
 # Default value : FS
 # Mandatory     : No
 #-----------------------------------------------------------------------------
-#STORAGETYPE=FS
+STORAGETYPE=<%= @storageType %>
 
 #-----------------------------------------------------------------------------
 # Name          : DISKGROUPNAME
@@ -468,7 +469,7 @@ RECOVERYAREADESTINATION="<%= @recoveryAreaDestination %>"
 # Default value : DATA
 # Mandatory     : No
 #-----------------------------------------------------------------------------
-#DISKGROUPNAME=DATA
+DISKGROUPNAME=<%= @asmDiskgroup %>
 
 #-----------------------------------------------------------------------------
 # Name          : ASMSNMP_PASSWORD
@@ -477,7 +478,7 @@ RECOVERYAREADESTINATION="<%= @recoveryAreaDestination %>"
 # Default value : None
 # Mandatory     : No
 #-----------------------------------------------------------------------------
-#ASMSNMP_PASSWORD=""
+ASMSNMP_PASSWORD=<%= @asmSnmpPassword %>
 
 #-----------------------------------------------------------------------------
 # Name          : RECOVERYGROUPNAME
@@ -486,7 +487,7 @@ RECOVERYAREADESTINATION="<%= @recoveryAreaDestination %>"
 # Default value : RECOVERY
 # Mandatory     : No
 #-----------------------------------------------------------------------------
-#RECOVERYGROUPNAME=RECOVERY
+RECOVERYGROUPNAME=<%= @recoveryDiskgroup %>
 
 
 #-----------------------------------------------------------------------------
@@ -937,7 +938,7 @@ GDBNAME = "orcl12.us.oracle.com"
 # Default value : None
 # Mandatory     : Yes, if EMCONFIGURATION is specified
 #-----------------------------------------------------------------------------
-#DBSNMPPASSWORD = "password"
+DBSNMPPASSWORD = "<%= @dbSnmpPassword %>"
 
 #-----------------------------------------------------------------------------
 # Name          : CENTRALAGENT

@@ -1,13 +1,14 @@
 newproperty(:quotas) do
   include EasyType
-  include ::Utils::OracleAccess
+  include ::OraUtils::OracleAccess
 
   desc "quota's for this user"
 
   to_translate_to_resource do | raw_resource|
     username = raw_resource.column_data('USERNAME').upcase
-    @raw_quotas ||= sql "select * from dba_ts_quotas"
-    quota_for(username)
+    sid = raw_resource.column_data('SID')
+    @raw_quotas ||= sql_on_all_sids "select * from dba_ts_quotas"
+    quota_for(username, sid)
   end
 
   def raw_validate(value)
@@ -31,8 +32,8 @@ newproperty(:quotas) do
 
   private
 
-  def self.quota_for(user)
-    translate(@raw_quotas.select{|q| q['USERNAME'] == user})
+  def self.quota_for(user, sid)
+    translate(@raw_quotas.select{|q| q['USERNAME'] == user && q['SID'] == sid})
   end
 
   def self.translate(raw)

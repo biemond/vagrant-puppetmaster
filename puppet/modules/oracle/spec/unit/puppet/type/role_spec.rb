@@ -9,23 +9,23 @@ describe role do
   let(:attribute_class) {  @class.attrclass(attribute_name) }
   let(:attribute) {@resource.property(attribute_name)}
 
-
   before :each do
     @class = role
     @provider = double 'provider'
     allow(@provider).to receive(:name).and_return(:simple)
-    allow(Puppet::Type::Role).to receive(:defaultprovider).and_return @provider
+    allow(@class).to receive(:defaultprovider).and_return @provider
+    class Puppet::Type::Role; def self.default_sid; 'TEST'; end; end
     @resource = @class.new({:name  => 'CONNECT'})
   end
 
 
-  it 'should have :name be its namevar' do
-    @class.key_attributes.should == [:name]
+  it 'should have :name  and :role_name as its namevar' do
+    expect(@class.key_attributes).to eq ([:name, :role_name])
   end
 
-  describe ':name' do
+  describe ':role_name' do
 
-    let(:attribute_class) { @class.attrclass(:name) }
+    let(:attribute_class) { @class.attrclass(:role_name) }
 
     it 'should pick its value from element ROLE' do
       raw_resource = InstancesResults['ROLE','MY_ROLE']
@@ -38,13 +38,13 @@ describe role do
     end
 
     it 'should accept a name' do
-      @resource[:name] = 'CONNECT'
-      expect(@resource[:name]).to eq 'CONNECT'
+      @resource[:role_name] = 'CONNECT'
+      expect(@resource[:role_name]).to eq 'CONNECT'
     end
 
     it 'should munge to uppercase' do
-      @resource[:name] = 'connect'
-      expect(@resource[:name]).to eq 'CONNECT'
+      @resource[:role_name] = 'connect'
+      expect(@resource[:role_name]).to eq 'CONNECT'
     end
   end
 

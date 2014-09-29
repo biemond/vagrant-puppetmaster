@@ -20,36 +20,36 @@
 #    }
 #
 #
-define oradb::rcu( $rcuFile                 = undef,
-                   $product                 = 'soasuite',
-                   $version                 = '11.1.1.7',
-                   $oracleHome              = undef,
-                   $user                    = 'oracle',
-                   $group                   = 'dba',
-                   $downloadDir             = '/install',
-                   $action                  = 'create',  # delete or create
-                   $dbServer                = undef,
-                   $dbService               = undef,
-                   $sysPassword             = undef,
-                   $schemaPrefix            = undef,
-                   $reposPassword           = undef,
-                   $tempTablespace          = undef,
-                   $puppetDownloadMntPoint  = undef,
-                   $remoteFile              = true,
-                   $logoutput               = false,
-)
-{
+define oradb::rcu(
+  $rcuFile                 = undef,
+  $product                 = 'soasuite',
+  $version                 = '11.1.1.7',
+  $oracleHome              = undef,
+  $user                    = 'oracle',
+  $group                   = 'dba',
+  $downloadDir             = '/install',
+  $action                  = 'create',  # delete or create
+  $dbServer                = undef,
+  $dbService               = undef,
+  $sysPassword             = undef,
+  $schemaPrefix            = undef,
+  $reposPassword           = undef,
+  $tempTablespace          = undef,
+  $puppetDownloadMntPoint  = undef,
+  $remoteFile              = true,
+  $logoutput               = false,
+){
   case $::kernel {
     'Linux': {
       $execPath = "${oracleHome}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
     }
     default: {
-      fail("Unrecognized or not supported operating system")
+      fail('Unrecognized or not supported operating system')
     }
   }
 
   if $puppetDownloadMntPoint == undef {
-    $mountPoint = "puppet:///modules/oradb/"
+    $mountPoint = 'puppet:///modules/oradb/'
   } else {
     $mountPoint = $puppetDownloadMntPoint
   }
@@ -77,7 +77,7 @@ define oradb::rcu( $rcuFile                 = undef,
         owner  => $user,
         group  => $group,
         source => "${mountPoint}/${rcuFile}",
-        before => Exec ["extract ${rcuFile}"],
+        before => Exec["extract ${rcuFile}"],
       }
     }
     $source = $downloadDir
@@ -85,13 +85,15 @@ define oradb::rcu( $rcuFile                 = undef,
     $source = $mountPoint
   }
 
-  exec { "extract ${rcuFile}":
-    command    => "unzip ${source}/${rcuFile} -d ${downloadDir}/rcu_${version}",
-    creates    => "${downloadDir}/rcu_${version}/rcuHome",
-    path       => $execPath,
-    user       => $user,
-    group      => $group,
-    logoutput  => false,
+  if ! defined(Exec["extract ${rcuFile}"]) {
+    exec { "extract ${rcuFile}":
+      command   => "unzip ${source}/${rcuFile} -d ${downloadDir}/rcu_${version}",
+      creates   => "${downloadDir}/rcu_${version}/rcuHome",
+      path      => $execPath,
+      user      => $user,
+      group     => $group,
+      logoutput => false,
+    }
   }
 
   if ! defined(File["${downloadDir}/rcu_${version}/rcuHome/rcu/log"]) {
@@ -101,7 +103,7 @@ define oradb::rcu( $rcuFile                 = undef,
       path    => "${downloadDir}/rcu_${version}/rcuHome/rcu/log",
       recurse => false,
       replace => false,
-      require => Exec ["extract ${rcuFile}"],
+      require => Exec["extract ${rcuFile}"],
       mode    => '0775',
       owner   => $user,
       group   => $group,
@@ -123,13 +125,13 @@ define oradb::rcu( $rcuFile                 = undef,
     # extra password for DISCUSSIONS and ACTIVITIES
     $componentsPasswords  = [ $reposPassword, $reposPassword, $reposPassword,$reposPassword,$reposPassword, $reposPassword, $reposPassword, $reposPassword, $reposPassword, $reposPassword, $reposPassword, $reposPassword, $reposPassword, $reposPassword]
   } else {
-    fail("Unrecognized FMW product")
+    fail('Unrecognized FMW product')
   }
 
   file { "${downloadDir}/rcu_${version}/rcu_passwords_${title}.txt":
     ensure  => present,
-    require => Exec ["extract ${rcuFile}"],
-    content => template("oradb/rcu_passwords.txt.erb"),
+    require => Exec["extract ${rcuFile}"],
+    content => template('oradb/rcu_passwords.txt.erb'),
     mode    => '0775',
     owner   => $user,
     group   => $group,
@@ -153,21 +155,21 @@ define oradb::rcu( $rcuFile                 = undef,
 
   if $action == 'create' {
     $statement = $createCommand
-  } 
+  }
   elsif $action == 'delete' {
     $statement = $deleteCommand
-  } 
+  }
 
   db_rcu{ $schemaPrefix:
-    ensure                  => $action,
-    statement               => $statement,  
-    os_user                 => $user,
-    oracle_home             => $oracleHome,
-    sys_password            => $sysPassword,
-    db_server               => $dbServer,
-    db_service              => $dbService,
-    require                 => [Exec["extract ${rcuFile}"],
-                                File["${downloadDir}/rcu_${version}/rcu_passwords_${title}.txt"],],
+    ensure       => $action,
+    statement    => $statement,
+    os_user      => $user,
+    oracle_home  => $oracleHome,
+    sys_password => $sysPassword,
+    db_server    => $dbServer,
+    db_service   => $dbService,
+    require      => [Exec["extract ${rcuFile}"],
+                    File["${downloadDir}/rcu_${version}/rcu_passwords_${title}.txt"],],
   }
 
 }

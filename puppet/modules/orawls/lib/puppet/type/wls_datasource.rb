@@ -1,6 +1,7 @@
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -8,16 +9,17 @@ module Puppet
   newtype(:wls_datasource) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
-    desc "This resource allows you to manage a datasource in an WebLogic domain."
+    desc 'This resource allows you to manage a datasource in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_datasource"}
+      environment = { 'action' => 'index', 'type' => 'wls_datasource' }
       wlst template('puppet:///modules/orawls/providers/wls_datasource/index.py.erb', binding), environment
     end
 
@@ -36,62 +38,30 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_datasource/destroy.py.erb', binding)
     end
 
-    def self.title_patterns
-      # possible values for /^((.*\/)?(.*)?)$/
-      # default/testuser1 with this as regex outcome 
-      #    default/testuser1 default/ testuser1
-      # testuser1 with this as regex outcome
-      #    testuser1  nil  testuser1
-      identity  = lambda {|x| x}
-      name      = lambda {|x| 
-          if x.include? "/"
-            x            # it contains a domain
-          else
-            'default/'+x # add the default domain
-          end
-        }
-      optional  = lambda{ |x| 
-          if x.nil?
-            'default' # when not found use default
-          else
-            x[0..-2]  # remove the last char / from domain name
-          end
-        }
-      [
-        [
-          /^((.*\/)?(.*)?)$/,
-          [
-            [ :name           , name     ],
-            [ :domain         , optional ],
-            [ :datasource_name, identity ]
-          ]
-        ],
-        [
-          /^([^=]+)$/,
-          [
-            [ :name, identity ]
-          ]
-        ]
-      ]
-    end
-
     parameter :domain
     parameter :name
     parameter :datasource_name
-
     parameter :password
-    property  :target
-    property  :targettype
-    property  :jndinames
-    property  :drivername
-    property  :url
-    property  :usexa
-    property  :user
-    property  :testtablename
-    property  :globaltransactionsprotocol
-    property  :extraproperties
-    property  :extrapropertiesvalues
-    property  :maxcapacity
-    property  :initialcapacity
+
+    property :target
+    property :targettype
+    property :jndinames
+    property :drivername
+    property :url
+    property :usexa
+    property :user
+    property :testtablename
+    property :globaltransactionsprotocol
+    property :extraproperties
+    property :extrapropertiesvalues
+    property :maxcapacity
+    property :initialcapacity
+    property :fanenabled
+    property :onsnodelist
+
+    add_title_attributes(:datasource_name) do
+      /^((.*\/)?(.*)?)$/
+    end
+
   end
 end

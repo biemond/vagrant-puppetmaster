@@ -1,14 +1,15 @@
 newproperty(:grants, :array_matching => :all) do
   include EasyType
-  include ::Utils::OracleAccess
+  include ::OraUtils::OracleAccess
   include EasyType::Mungers::Upcase
 
   desc "grants for this user"
 
   to_translate_to_resource do | raw_resource|
     @all_rights ||= privileges + granted_roles
-    user = raw_resource.column_data('USERNAME').upcase
-    rights_for_user(user)
+    user        = raw_resource.column_data('USERNAME').upcase
+    sid         = raw_resource.column_data('SID')
+    rights_for_user(user, sid)
   end
 
   #
@@ -27,11 +28,12 @@ newproperty(:grants, :array_matching => :all) do
   end
 
   on_apply do | command_builder |
-    if command_builder.line == "alter user #{resource[:name]}"
+    sid = sid_from_resource
+    if command_builder.line == "alter user #{resource[:username]}"
       command_builder.line = ""
     end
-    command_builder.after(revoke(revoked_rights)) unless revoked_rights.empty?
-    command_builder.after(grants(granted_rights)) unless granted_rights.empty?
+    command_builder.after(revoke(revoked_rights), :sid => sid) unless revoked_rights.empty?
+    command_builder.after(grants(granted_rights), :sid => sid) unless granted_rights.empty?
     nil
   end
 
@@ -55,24 +57,24 @@ newproperty(:grants, :array_matching => :all) do
     end
 
     def revoke(rights)
-      rights.empty? ? nil : "revoke #{rights.join(',')} from #{provider.name}"
+      rights.empty? ? nil : "revoke #{rights.join(',')} from #{resource.username}"
     end
 
     def grants(rights)
-      rights.empty? ? nil : "grant #{rights.join(',')} to #{provider.name}"
+      rights.empty? ? nil : "grant #{rights.join(',')} to #{resource.username}"
     end
 
-    def self.rights_for_user(user)
-      @all_rights.select {|r| r['GRANTEE'] == user}.collect{|u| u['PRIVILEGE']}
+    def self.rights_for_user(user, sid)
+      @all_rights.select {|r| r['GRANTEE'] == user && r['SID'] == sid}.collect{|u| u['PRIVILEGE']}
     end
 
 
     def self.privileges
-      sql "select distinct grantee, privilege from dba_sys_privs"
+      sql_on_all_sids "select distinct grantee, privilege from dba_sys_privs"
     end
 
     def self.granted_roles
-      sql "select distinct grantee, granted_role as privilege from dba_role_privs"
+      sql_on_all_sids "select distinct grantee, granted_role as privilege from dba_role_privs"
     end
 
 end

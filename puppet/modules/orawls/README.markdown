@@ -1,75 +1,48 @@
-#Oracle WebLogic / Fusion Middleware puppet module V2
-[![Build Status](https://travis-ci.org/biemond/biemond-orawls.png)](https://travis-ci.org/biemond/biemond-orawls)
+# Oracle WebLogic / Fusion Middleware puppet module V2
+[![Build Status](https://travis-ci.org/biemond/biemond-orawls.svg?branch=master)](https://travis-ci.org/biemond/biemond-orawls) [![Coverage Status](https://coveralls.io/repos/biemond/biemond-orawls/badge.png?branch=master)](https://coveralls.io/r/biemond/biemond-orawls?branch=master)
 
-created by Edwin Biemond email biemond at gmail dot com   
-[biemond.blogspot.com](http://biemond.blogspot.com)    
-[Github homepage](https://github.com/biemond/biemond-orawls)  
+created by Edwin Biemond email biemond at gmail dot com
+[biemond.blogspot.com](http://biemond.blogspot.com)
+[Github homepage](https://github.com/biemond/biemond-orawls)
 
-Got the same options as the WLS puppet module but with 
+Got the same options as the WLS puppet module but with
 - types & providers instead of wlstexec scripts ( detect changes )
-- more FMW product installations 
+- more FMW product installations
 - support for FMW clusters ( SOA Suite,OSB & ADF )
 - optimized for Hiera
 - totally refactored
 - only for Linux and Solaris
 
-Many thanks to Bert Hajee (hajee) for his contributions, help and the his easy_type module  
+Many thanks to Bert Hajee (hajee) for his contributions, help and the his easy_type module
 [![Powered By EasyType](https://raw.github.com/hajee/easy_type/master/powered_by_easy_type.png)](https://github.com/hajee/easy_type)
 
-Should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10,11 sparc / x86  
+Should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10,11 sparc / x86
 
-Dependency with 
-- hajee/easy_type (latest)
+Dependency with
+- hajee/easy_type >=0.10.0
 - adrien/filemapper >= 1.1.1
 - reidmv/yamlfile >=0.2.0
 
-##History
-- 1.0.5 wls_domain type to modify JTA,Security,Log & JPA Oracle Unified Directory install, domain, instances creation & OUD control
-- 1.0.4 wls_deployment type/provider, post_classpath param on wls_setting, WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.1.2.1 & 11.1.2.2 support with OHS OAM Webgate
-- 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
-- 1.0.2 Custom Identity and Custom Trust
-- 1.0.1 Multi domain support with Puppet WLS types and providers
+## Complete examples
+- WebLogic 12.1.3 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
+- WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
+- WebLogic 12.1.3 infra with OSB, the vagrant test case for full working WebLogic 12.1.3 infra OSB cluster example [biemond-orawls-vagrant-12.1.3-infra-osb](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-osb)
+- WebLogic 12.1.3 infra with OSB & SOA,ESS,BAM, the vagrant test case for full working WebLogic 12.1.3 infra OSB SOA Cluster example [biemond-orawls-vagrant-12.1.3-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-soa)
+- WebLogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example [biemond-orawls-vagrant-12.1.2](https://github.com/biemond/biemond-orawls-vagrant-12.1.2)
+- WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.2-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra)
+- Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example [biemond-orawls-vagrant-solaris](https://github.com/biemond/biemond-orawls-vagrant-solaris)
+- Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example [biemond-orawls-vagrant-oim_oam](https://github.com/biemond/biemond-orawls-vagrant-oim_oam)
+- WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example [biemond-orawls-vagrant](https://github.com/biemond/biemond-orawls-vagrant)
+- Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example [biemond-orawls-vagrant-solaris-soa](https://github.com/biemond/biemond-orawls-vagrant-solaris-soa)
+- Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box [vagrant-puppetmaster](https://github.com/biemond/vagrant-puppetmaster)
 
+## Orawls WebLogic Features
 
-##Complete examples
-see the following usages below  
-
-###Masterless (vagrant box)
-
-WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant  
-
-WebLogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-12.1.2  
-
-WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server)  
-https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra  
-
-Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-solaris  
-
-Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example  
-https://github.com/biemond/biemond-orawls-vagrant-oim_oam
-
-Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
-
-###Puppetmaster (vagrant box)
-Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
-- oradb (oracle database 11.2.0.4 )
-- adminwls with nodewls1 & nodewls2 (cluster 10.3.6 with JMS)
-- adminwls2 ( adminserver 10.3.6  with JMS)
-- adminwls3 ( adminserver 12.1.2 )
-- adminwls4 ( adminserver 10.3.6 + osb PS6 + soa suite PS6 ( with bpm & bam ))
-- adminwls5 ( adminserver 10.3.6 + osb PS6 )
-
-##Orawls WebLogic Features
-
-- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
+- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1 & 12.1.2 & 12.1.3 + FMW infra )
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
 - [Apply a OPatch](#opatch) on a Middleware home ( >= 12.1.2 ) or a Oracle product home
 - [Create a WebLogic domain](#domain)
-- [Pack a WebLogic domain](#pack)
+- [Pack a WebLogic domain](#packdomain)
 - [Copy a WebLogic domain](#copydomain) to a other node with SSH, unpack and enroll to a nodemanager
 - [JSSE](#jsse) Java Secure Socket Extension support
 - [Custom Identity and Trust Store support](#identity)
@@ -78,20 +51,20 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - [start or stop AdminServer, Managed or a Cluster](#control)
 - [StoreUserConfig](#storeuserconfig) for storing WebLogic Credentials and using in WLST
 
-###Fusion Middleware Features
+### Fusion Middleware Features 11g & 12.1.3
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
 - [WebTier](#webtier) Oracle HTTP server
-- [OSB, SOA Suite](#fmwcluster) ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
+- [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
-- [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate
+- [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate, Also Cluster support for OIM OAM
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB and JMS
 
-##Wls types and providers
-ensurable -> create,modify,destroy + puppet resource support
-
+## Wls types and providers
 - [wls_setting](#wls_setting), set the default wls parameters for the other types and also used by puppet resource
+- [wls_adminserver](#wls_adminserver) control the adminserver or subscribe to changes
+- [wls_managedserver](#wls_managedserver) control the managed server,cluster or subscribe to changes
 - [wls_domain](#wls_domain)
 - [wls_deployment](#wls_deployment)
 - [wls_domain](#wls_domain)
@@ -101,6 +74,9 @@ ensurable -> create,modify,destroy + puppet resource support
 - [wls_server](#wls_server)
 - [wls_server_channel](#wls_server_channel)
 - [wls_cluster](#wls_cluster)
+- [wls_coherence_cluster](#wls_coherence_cluster)
+- [wls_server_template](#wls_server_template)
+- [wls_dynamic_cluster](#wls_dynamic_cluster)
 - [wls_virtual_host](#wls_virtual_host)
 - [wls_workmanager_constraint](#wls_workmanager_constraint)
 - [wls_workmanager](#wls_workmanager)
@@ -122,24 +98,24 @@ ensurable -> create,modify,destroy + puppet resource support
 - [wls_foreign_server_object](#wls_foreign_server_object)
 
 
-##Domain creation options (Dev or Prod mode)
+## Domain creation options (Dev or Prod mode)
 
-all templates creates a WebLogic domain, logs the domain creation output 
+all templates creates a WebLogic domain, logs the domain creation output
 
-- domain 'standard'    -> a default WebLogic    
-- domain 'adf'         -> JRF + EM + Coherence (12.1.2) + OWSM (12.1.2) + JAX-WS Advanced + Soap over JMS (12.1.2)   
-- domain 'osb'         -> OSB + JRF + EM + OWSM 
-- domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM 
-- domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM 
-- domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM 
-- domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM 
-- domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM 
-- domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM 
-- domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)  
-- domain 'oud'         -> OUD (Oracle Unified Directory)  
+- domain 'standard'    -> a default WebLogic
+- domain 'adf'         -> JRF + EM + Coherence (12.1.2 & 12.1.3) + OWSM (12.1.2 & 12.1.3) + JAX-WS Advanced + Soap over JMS (12.1.2 & 12.1.3)
+- domain 'osb'         -> OSB + JRF + EM + OWSM
+- domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM
+- domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM
+- domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM
+- domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM
+- domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
+- domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM
+- domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)
+- domain 'oud'         -> OUD (Oracle Unified Directory)
 
 
-##Orawls WebLogic Facter
+## Orawls WebLogic Facter
 
 Contains WebLogic Facter which displays the following
 - Middleware homes
@@ -148,19 +124,19 @@ Contains WebLogic Facter which displays the following
 - Domain configuration ( everything of a WebLogic Domain like deployments, datasource, JMS, SAF)
 
 
-##Override the default Oracle operating system user
+## Override the default Oracle operating system user
 
-default this orawls module uses oracle as weblogic install user  
-you can override this by setting the following fact 'override_weblogic_user', like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls  
+default this orawls module uses oracle as weblogic install user
+you can override this by setting the following fact 'override_weblogic_user', like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls
 
-##Override the default WebLogic domain folder
+## Override the default WebLogic domain folder
 
 Set the following hiera parameters for weblogic.pp
 
     wls_domains_dir:   '/opt/oracle/wlsdomains/domains'
     wls_apps_dir:      '/opt/oracle/wlsdomains/applications'
 
-Set the following wls_domains_dir & wls_apps_dir parameters in 
+Set the following wls_domains_dir & wls_apps_dir parameters in
 - weblogic.pp
 - domain.pp
 - control.pp
@@ -174,18 +150,18 @@ or hiera parameters of weblogic.pp
     orawls::weblogic::wls_domains_dir:      *wls_domains_dir
     orawls::weblogic::wls_apps_dir:         *wls_apps_dir
 
-##<a name="jsse">Java Secure Socket Extension support</a> 
+## <a name="jsse">Java Secure Socket Extension support</a>
 
-Requires the JDK 7 or 8 JCE extension 
+Requires the JDK 7 or 8 JCE extension
 
     jdk7::install7{ 'jdk1.7.0_51':
-        version                   => "7u51" , 
+        version                   => "7u51" ,
         fullVersion               => "jdk1.7.0_51",
-        alternativesPriority      => 18000, 
+        alternativesPriority      => 18000,
         x64                       => true,
         downloadDir               => "/data/install",
         urandomJavaFix            => true,
-        rsakeySizeFix             => true,                          <!-- 
+        rsakeySizeFix             => true,                          <!--
         cryptographyExtensionFile => "UnlimitedJCEPolicyJDK7.zip",  <!---
         sourcePath                => "/software",
     }
@@ -196,12 +172,12 @@ To enable this in orawls you can set the jsse_enabled on the following manifests
 - control.pp
 
 or set the following hiera parameter
-     
+
      wls_jsse_enabled:         true
 
-##<a name="identity">Enterprise security with Custom Identity and Trust store</a>
+## <a name="identity">Enterprise security with Custom Identity and Trust store</a>
 
-in combination with JDK7 JCE policy, ORAUTILS and WebLogic JSSE you can use your own certificates 
+in combination with JDK7 JCE policy, ORAUTILS and WebLogic JSSE you can use your own certificates
 
 just generates all the certificates and set the following hiera variables.
 
@@ -248,7 +224,7 @@ just generates all the certificates and set the following hiera variables.
             sslenabled:                            '1'
             ssllistenport:                         '8201'
             sslhostnameverificationignored:        '1'
-            jsseenabled:                           '1' 
+            jsseenabled:                           '1'
             custom_identity:                       '1'
             custom_identity_keystore_filename:     '/vagrant/identity_node1.jks'
             custom_identity_keystore_passphrase:   'welcome'
@@ -258,38 +234,38 @@ just generates all the certificates and set the following hiera variables.
             trust_keystore_passphrase:             *wls_trust_keystore_passphrase
 
 
-##<a name="urandom">Linux low on entropy or urandom fix</a> 
+## <a name="urandom">Linux low on entropy or urandom fix</a>
 
 can cause certain operations to be very slow. Encryption operations need entropy to ensure randomness. Entropy is generated by the OS when you use the keyboard, the mouse or the disk.
 
 If an encryption operation is missing entropy it will wait until enough is generated.
 
-three options  
--  use rngd service (include __orawls::urandomfix__ class)  
--  set java.security in JDK ( jre/lib/security in my jdk7 module )  
--  set -Djava.security.egd=file:/dev/./urandom param 
+three options
+-  use rngd service (include __orawls::urandomfix__ class)
+-  set java.security in JDK ( jre/lib/security in my jdk7 module )
+-  set -Djava.security.egd=file:/dev/./urandom param
 
-##Oracle binaries files and alternate download location
+## Oracle binaries files and alternate download location
 
-Some manifests like orawls:weblogic bsu opatch fmw supports an alternative mountpoint for the big oracle setup/install files.  
-When not provided it uses the files folder located in the orawls puppet module  
+Some manifests like orawls:weblogic bsu opatch fmw supports an alternative mountpoint for the big oracle setup/install files.
+When not provided it uses the files folder located in the orawls puppet module
 else you can use $source =>
 - "/mnt"
 - "/vagrant"
 - "puppet:///modules/orawls/" (default)
-- "puppet:///middleware/"  
+- "puppet:///middleware/"
 
-when the files are also accesiable locally then you can also set $remote_file => false this will not move the files to the download folder, just extract or install 
+when the files are also accesiable locally then you can also set $remote_file => false this will not move the files to the download folder, just extract or install
 
-##WebLogic requirements
+## WebLogic requirements
 
 Operating System settings like User, Group, ULimits and kernel parameters requirements
 
-install the following module to set the kernel parameters  
-puppet module install fiddyspence-sysctl  
+install the following module to set the kernel parameters
+puppet module install fiddyspence-sysctl
 
-install the following module to set the user limits parameters  
-puppet module install erwbgy-limits  
+install the following module to set the user limits parameters
+puppet module install erwbgy-limits
 
      sysctl { 'kernel.msgmnb':                 ensure => 'present', permanent => 'yes', value => '65536',}
      sysctl { 'kernel.msgmax':                 ensure => 'present', permanent => 'yes', value => '65536',}
@@ -300,7 +276,7 @@ puppet module install erwbgy-limits
      sysctl { 'net.ipv4.tcp_keepalive_intvl':  ensure => 'present', permanent => 'yes', value => '30',}
      sysctl { 'net.ipv4.tcp_keepalive_probes': ensure => 'present', permanent => 'yes', value => '5',}
      sysctl { 'net.ipv4.tcp_fin_timeout':      ensure => 'present', permanent => 'yes', value => '30',}
-   
+
      class { 'limits':
        config => {'*'       => {  'nofile'  => { soft => '2048'   , hard => '8192',   },},
                   'oracle'  => {  'nofile'  => { soft => '65535'  , hard => '65535',  },
@@ -315,7 +291,7 @@ create a WebLogic user and group
     group { 'dba' :
       ensure => present,
     }
-    
+
     # http://raftaman.net/?p=1311 for generating password
     user { 'oracle' :
       ensure     => present,
@@ -329,9 +305,9 @@ create a WebLogic user and group
     }
 
 
-##Necessary Hiera setup for global vars and Facter
+## Necessary Hiera setup for global vars and Facter
 
-if you don't want to provide the same parameters in all the defines and classes 
+if you don't want to provide the same parameters in all the defines and classes
 
 
 hiera.yaml main configuration
@@ -355,17 +331,17 @@ common.yaml
     # global WebLogic vars
     wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
     wls_weblogic_user:        &wls_weblogic_user        "weblogic"
-    
+
     # 12.1.2 settings
     #wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
     #wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
     #wls_version:              &wls_version              1212
-    
+
     # 10.3.6 settings
     wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware11g/wlserver_10.3"
     wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware11g"
     wls_version:              &wls_version              1036
-    
+
     # global OS vars
     wls_os_user:              &wls_os_user              "oracle"
     wls_os_group:             &wls_os_group             "dba"
@@ -373,21 +349,21 @@ common.yaml
     wls_source:               &wls_source               "/vagrant"
     wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/jdk1.7.0_45"
     wls_log_dir:              &wls_log_dir              "/data/logs"
-    
-    
-    #WebLogic installation variables 
+
+
+    #WebLogic installation variables
     orawls::weblogic::version:              *wls_version
     orawls::weblogic::filename:             "wls1036_generic.jar"
-    
+
     # weblogic 12.1.2
     #orawls::weblogic::filename:             "wls_121200.jar"
     # or with 12.1.2 FMW infra
     #orawls::weblogic::filename:             "fmw_infra_121200.jar"
     #orawls::weblogic::fmw_infra:            true
-    
+
     orawls::weblogic::middleware_home_dir:  *wls_middleware_home_dir
     orawls::weblogic::log_output:           false
-    
+
     # hiera default anchors
     orawls::weblogic::jdk_home_dir:         *wls_jdk_home_dir
     orawls::weblogic::oracle_base_home_dir: *wls_oracle_base_home_dir
@@ -395,31 +371,46 @@ common.yaml
     orawls::weblogic::os_group:             *wls_os_group
     orawls::weblogic::download_dir:         *wls_download_dir
     orawls::weblogic::source:               *wls_source
-        
 
-##WebLogic Module Usage
 
-###weblogic
-__orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1 or 12.1.2  
-these settings works for wls_121200.jar when you want to install the 12.1.2 FMW infra version  
-use fmw_infra_121200.jar as filename and set fmw_infra parameter to true  
+## WebLogic Module Usage
 
-    class{'orawls::weblogic':                             
-      version              => 1212,                       # 1036|1211|1212
+### weblogic
+__orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2 & 12.1.3
+
+    class{'orawls::weblogic':
+      version              => 1212,                       # 1036|1211|1212|1213
       filename             => 'wls_121200.jar',           # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
-      jdk_home_dir         => '/usr/java/jdk1.7.0_45',    
-      oracle_base_home_dir => "/opt/oracle",              
+      jdk_home_dir         => '/usr/java/jdk1.7.0_45',
+      oracle_base_home_dir => "/opt/oracle",
       middleware_home_dir  => "/opt/oracle/middleware12c",
-      os_user              => "oracle",                   
-      os_group             => "dba",                      
-      download_dir         => "/data/install",            
+      os_user              => "oracle",
+      os_group             => "dba",
+      download_dir         => "/data/install",
       source               => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
-      log_output           => true,                      
+      log_output           => true,
     }
+
+12.1.3 infra
+
+    class{'orawls::weblogic':
+      version              => 1213,
+      filename             => 'fmw_12.1.3.0.0_infrastructure.jar',
+      fmw_infra            => true,
+      jdk_home_dir         => '/usr/java/jdk1.7.0_55',
+      oracle_base_home_dir => "/opt/oracle",
+      middleware_home_dir  => "/opt/oracle/middleware12c",
+      os_user              => "oracle",
+      os_group             => "dba",
+      download_dir         => "/data/install",
+      source               => "puppet:///middleware",
+      log_output           => true,
+    }
+
 
 or with a bin file located on a share
 
-    class{'orawls::weblogic':                             
+    class{'orawls::weblogic':
         version              => 1036,
         filename             => "oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin",
         oracle_base_home_dir => "/opt/weblogic",
@@ -436,7 +427,7 @@ or with a bin file located on a share
      }
 
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     include orawls::weblogic
@@ -456,7 +447,7 @@ vagrantcentos64.example.com.yaml
 
 
 
-###opatch 
+### opatch
 __orawls::opatch__ apply an OPatch on a Middleware home or a Oracle product home
 
     orawls::opatch {'16175470':
@@ -471,7 +462,7 @@ __orawls::opatch__ apply an OPatch on a Middleware home or a Oracle product home
       source                  => "/vagrant",
       log_output              => false,
     }
-    
+
 
 or when you set the defaults hiera variables
 
@@ -481,15 +472,15 @@ or when you set the defaults hiera variables
       patch_id                => "16175470",
       patch_file              => "p16175470_121200_Generic.zip",
     }
-    
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
     $opatch_instances = hiera('opatch_instances', {})
     create_resources('orawls::opatch',$opatch_instances, $default_params)
-  
+
 
 common.yaml
 
@@ -506,7 +497,7 @@ common.yaml
          download_dir:             "/data/install"
          source:                   "/vagrant"
          log_output:               true
-        
+
 
 
 or when you set the defaults hiera variables
@@ -518,9 +509,9 @@ or when you set the defaults hiera variables
          oracle_product_home_dir:  "/opt/oracle/middleware12c"
          patch_id:                 "16175470"
          patch_file:               "p16175470_121200_Generic.zip"
-        
 
-###bsu 
+
+### bsu
 __orawls::bsu__ apply or remove a WebLogic BSU Patch ( ensure = present or absent )
 
     orawls::bsu {'BYJ1':
@@ -548,13 +539,13 @@ or when you set the defaults hiera variables
     }
 
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
     $bsu_instances = hiera('bsu_instances', {})
     create_resources('orawls::bsu',$bsu_instances, $default_params)
-  
+
 
 common.yaml
 
@@ -585,11 +576,11 @@ or when you set the defaults hiera variables
          log_output:              false
 
 
-###fmw 
+### fmw
 __orawls::fmw__ installs FMW software (add-on) to a middleware home like OSB,SOA Suite, WebTier (HTTP Server), Oracle Identity Management, Web Center + Content
 
 
-    # fmw_product = adf|soa|osb|wcc|wc|oim|web|webgate
+    # fmw_product = adf|soa|osb|wcc|wc|oim|web|webgate|b2b|mft
     orawls::fmw{"osbPS6":
       middleware_home_dir     => "/opt/oracle/middleware11gR1",
       weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
@@ -603,7 +594,7 @@ __orawls::fmw__ installs FMW software (add-on) to a middleware home like OSB,SOA
       source                  => "/vagrant",
       log_output              => false,
     }
-    
+
 
 or when you set the defaults hiera variables
 
@@ -612,10 +603,17 @@ or when you set the defaults hiera variables
       fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
       log_output              => false,
     }
-    
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+    orawls::fmw{"osb12.1.3":
+      version                 => 1213
+      fmw_product             => "osb"
+      fmw_file1               => "fmw_12.1.3.0.0_osb_Disk1_1of1.zip",
+      log_output              => false,
+    }
 
+
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
     $default_params = {}
     $fmw_installations = hiera('fmw_installations', {})
@@ -626,7 +624,45 @@ common.yaml
 
 when you set the defaults hiera variables
 
-    ---
+    if ( defined(Orawls::Fmw["b2b1213"])) {
+      Orawls::Fmw["soa1213"] -> Orawls::Fmw["b2b1213"]
+    }
+
+
+    fmw_installations:
+      'soa1213':
+        version:                 *wls_version
+        fmw_product:             "soa"
+        fmw_file1:               "fmw_12.1.3.0.0_soa_Disk1_1of1.zip"
+        bpm:                     true
+        log_output:              true
+        remote_file:             false
+      'webtier1213':
+        version:                 *wls_version
+        fmw_product:             "web"
+        fmw_file1:               "fmw_12.1.3.0.0_ohs_linux64_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'osb1213':
+        version:                 *wls_version
+        fmw_product:             "osb"
+        fmw_file1:               "fmw_12.1.3.0.0_osb_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'mft1213':
+        version:                 *wls_version
+        fmw_product:             "mft"
+        fmw_file1:               "fmw_12.1.3.0.0_mft_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'b2b1213':
+        version:                 *wls_version
+        fmw_product:             "b2b"
+        healthcare:              true
+        fmw_file1:               "fmw_12.1.3.0.0_b2b_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+
     # FMW installation on top of WebLogic 10.3.6
     fmw_installations:
       'osbPS6':
@@ -643,7 +679,7 @@ when you set the defaults hiera variables
     # FMW installation on top of WebLogic 12.1.2
     fmw_installations:
       'webtier1212':
-        version:                 1212 
+        version:                 1212
         fmw_product:             "web"
         fmw_file1:               "ofm_ohs_linux_12.1.2.0.0_64_disk1_1of1.zip"
         log_output:              true
@@ -688,13 +724,13 @@ when you set the defaults hiera variables
         remote_file:             false
 
 
-###domain 
-__orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | ADF | WebCenter | OIM or OAM or OUD   
+### domain
+__orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | ADF | WebCenter | OIM or OAM or OUD
 
-optional override the default server arguments in the domain.py template with java_arguments parameter  
+optional override the default server arguments in the domain.py template with java_arguments parameter
 
     orawls::domain { 'wlsDomain12c':
-      version                    => 1212,  # 1036|1111|1211|1212
+      version                    => 1212,  # 1036|1111|1211|1212|1213
       weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
       middleware_home_dir        => "/opt/oracle/middleware12c",
       jdk_home_dir               => "/usr/java/jdk1.7.0_45",
@@ -713,7 +749,7 @@ optional override the default server arguments in the domain.py template with ja
       log_dir                    => "/data/logs",
       download_dir               => "/data/install",
       log_output                 => true,
-    }                             
+    }
 
 or when you set the defaults hiera variables
 
@@ -727,10 +763,10 @@ or when you set the defaults hiera variables
       nodemanager_port           => 5556,
       weblogic_password          => "weblogic1",
       log_output                 => true,
-    }                             
+    }
 
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default = {}
@@ -760,8 +796,8 @@ vagrantcentos64.example.com.yaml
          os_group:             "dba"
          log_dir:              "/data/logs"
          download_dir:         "/data/install"
-         java_arguments:      
-            ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m" 
+         java_arguments:
+            ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
             OSB:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
          log_output:           true
 
@@ -778,13 +814,13 @@ or when you set the defaults hiera variables
          adminserver_port:     7001
          nodemanager_port:     5556
          weblogic_password:    "weblogic1"
-         java_arguments:      
-            ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m" 
+         java_arguments:
+            ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
          log_output:           true
-    
+
 when you just have one WebLogic domain on a server
-     
-    --- 
+
+    ---
     # when you have just one domain on a server
     domain_name:                "Wls1036"
     domain_adminserver:         "AdminServer"
@@ -792,8 +828,8 @@ when you just have one WebLogic domain on a server
     domain_adminserver_port:    7001
     domain_nodemanager_port:    5556
     domain_wls_password:        "weblogic1"
-    
-    
+
+
     # create a standard domain
     domain_instances:
       'wlsDomain':
@@ -801,7 +837,7 @@ when you just have one WebLogic domain on a server
          development_mode:     false
          log_output:           *logoutput
 
-or with custom identity and custom truststore    
+or with custom identity and custom truststore
 
     # used by nodemanager, control and domain creation
     wls_custom_trust:                  &wls_custom_trust              true
@@ -820,14 +856,103 @@ or with custom identity and custom truststore
         custom_identity_alias:                 'admin'
         custom_identity_privatekey_passphrase: 'welcome'
 
+FMW 11g, 12.1.2 , 12.1.3 ADF domain with webtier
 
-###pack 
+    # create a standard domain
+    domain_instances:
+      'adf_domain':
+         domain_template:          "adf"
+         development_mode:         true
+         log_output:               *logoutput
+         nodemanager_address:      "10.10.10.21"
+         repository_database_url:  "jdbc:oracle:thin:@wlsdb.example.com:1521/wlsrepos.example.com"
+         repository_prefix:        "DEV"
+         repository_password:      "Welcome01"
+         repository_sys_password:  "Welcome01"
+         rcu_database_url:         "wlsdb.example.com:1521:wlsrepos.example.com"
+         webtier_enabled:          true
+
+FMW 11g WebLogic SOA Suite domain
+
+    # create a standard domain
+    domain_instances:
+      'wlsDomain':
+         domain_template:          "osb_soa_bpm"
+         development_mode:         false
+         log_output:               *logoutput
+         repository_database_url:  "jdbc:oracle:thin:@10.10.10.5:1521/test.oracle.com"
+         repository_prefix:        "DEV"
+         repository_password:      "Welcome01"
+
+FMW 11g WebLogic OIM / OAM domain
+
+    domain_instances:
+      'oimDomain':
+        version:                  1112
+        domain_template:          "oim"
+        development_mode:         true
+        log_output:               *logoutput
+        repository_database_url:  "jdbc:oracle:thin:@oimdb.example.com:1521/oimrepos.example.com"
+        repository_prefix:        "DEV"
+        repository_password:      "Welcome01"
+        repository_sys_password:  "Welcome01"
+        rcu_database_url:         "oimdb.example.com:1521/oimrepos.example.com"
+
+FMW 12.1.3 WebLogic SOA Suite domain
+
+    # create a soa domain
+    domain_instances:
+      'soa_domain':
+        version:                  1213
+        domain_template:          "osb_soa_bpm"
+        bam_enabled:              true
+        b2b_enabled:              true
+        ess_enabled:              true
+        development_mode:         true
+        log_output:               *logoutput
+        nodemanager_address:      "10.10.10.21"
+        repository_database_url:  "jdbc:oracle:thin:@soadb.example.com:1521/soarepos.example.com"
+        repository_prefix:        "DEV"
+        repository_password:      "Welcome01"
+        repository_sys_password:  "Welcome01"
+        rcu_database_url:         "soadb.example.com:1521:soarepos.example.com"
+
+FMW 12.1.3 WebLogic OSB domain
+
+    domain_instances:
+      'osb_domain':
+         version:                  *wls_version
+         domain_template:          "osb"
+         development_mode:         true
+         log_output:               *logoutput
+         nodemanager_address:      *domain_adminserver_address
+         repository_database_url:  "jdbc:oracle:thin:@osbdb.example.com:1521/osbrepos.example.com"
+         repository_prefix:        "DEV"
+         repository_password:      "Welcome01"
+         repository_sys_password:  "Welcome01"
+         rcu_database_url:         "osbdb.example.com:1521:osbrepos.example.com"
+
+
+
+### packdomain
 __orawls::packdomain__ pack a WebLogic Domain and add this to the download folder
+
+    orawls::packdomain{"Wls12c":
+      weblogic_home_dir      => "/opt/oracle/middleware12c/wlserver",
+      middleware_home_dir    => "/opt/oracle/middleware12c",
+      jdk_home_dir           => "/usr/java/jdk1.7.0_45",
+      wls_domains_dir        => "/opt/oracle/domains",
+      domain_name            => "Wls12c",
+      os_user                => "oracle",
+      os_group               => "dba",
+      download_dir           => "/data/install",
+    }
+
+or with hiera
 
     $default_params = {}
     $pack_domain_instances = hiera('pack_domain_instances', {})
     create_resources('orawls::packdomain',$pack_domain_instances, $default_params)
-
 
     # pack domains
     pack_domain_instances:
@@ -835,11 +960,33 @@ __orawls::packdomain__ pack a WebLogic Domain and add this to the download folde
          log_output:               *logoutput
 
 
-###copydomain 
+### copydomain
 __orawls::copydomain__ copies a WebLogic domain with SSH or from a share, unpack and enroll to a nodemanager
 
+When using ssh (use_ssh = true) you need to setup ssh so you won't need to provide a password
 
-Configuration with Hiera ( need to have puppet > 3.0 )    
+    orawls::copydomain{"Wls12c":
+      version                => 1212,
+      weblogic_home_dir      => "/opt/oracle/middleware12c/wlserver",
+      middleware_home_dir    => "/opt/oracle/middleware12c",
+      jdk_home_dir           => "/usr/java/jdk1.7.0_45",
+      wls_domains_dir        => "/opt/oracle/domains",
+      wls_apps_dir           => "/opt/oracle/applications",
+      domain_name            => "Wls12c",
+      os_user                => "oracle",
+      os_group               => "dba",
+      download_dir           => "/data/install",
+      log_dir                => "/var/log/weblogic",
+      log_output             => true,
+      use_ssh                => false,
+      domain_pack_dir        => /mnt/fmw_share,
+      adminserver_address    => "10.10.10.10",
+      adminserver_port       => 7001,
+      weblogic_user          => "weblogic",
+      weblogic_password      => "weblogic1",
+    }
+
+Configuration with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
@@ -848,8 +995,8 @@ Configuration with Hiera ( need to have puppet > 3.0 )
 
 
 when you just have one WebLogic domain on a server
-     
-    --- 
+
+    ---
     # when you have just one domain on a server
     domain_name:                "Wls1036"
     domain_adminserver:         "AdminServer"
@@ -857,7 +1004,7 @@ when you just have one WebLogic domain on a server
     domain_adminserver_port:    7001
     domain_nodemanager_port:    5556
     domain_wls_password:        "weblogic1"
-    
+
     # copy domains to other nodes
     copy_instances:
       'wlsDomain':
@@ -866,9 +1013,9 @@ when you just have one WebLogic domain on a server
          log_output:              *logoutput
       'wlsDomain2':
          log_output:              *logoutput
-    
 
-###nodemanager 
+
+### nodemanager
 __orawls::nodemanager__ start the nodemanager of a WebLogic Domain or Middleware Home
 
     orawls::nodemanager{'nodemanager12c':
@@ -876,23 +1023,23 @@ __orawls::nodemanager__ start the nodemanager of a WebLogic Domain or Middleware
       weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
       jdk_home_dir               => "/usr/java/jdk1.7.0_45",
       nodemanager_port           => 5556,
-      domain_name                => "Wls12c",     
+      domain_name                => "Wls12c",
       os_user                    => "oracle",
       os_group                   => "dba",
       log_dir                    => "/data/logs",
       download_dir               => "/data/install",
       log_output                 => true,
-    }  
+    }
 
 or when you set the defaults hiera variables
 
     orawls::nodemanager{'nodemanager12c':
       nodemanager_port           => 5556,
-      domain_name                => "Wls12c",     
+      domain_name                => "Wls12c",
       log_output                 => true,
     }
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
     $default = {}
     $nodemanager_instances = hiera('nodemanager_instances', [])
@@ -929,13 +1076,13 @@ when you just have one WebLogic domain on a server
     #when you just have one domain on a server
     domain_name:                "Wls1036"
     domain_nodemanager_port:    5556
-    
+
     ---
     nodemanager_instances:
       'nodemanager12c':
          log_output:           true
 
-or with custom identity and custom truststore    
+or with custom identity and custom truststore
 
     # used by nodemanager, control and domain creation
     wls_custom_trust:                  &wls_custom_trust              true
@@ -954,8 +1101,8 @@ or with custom identity and custom truststore
 
 
 
-###control 
-__orawls::control__ start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain
+### control
+__orawls::control__ start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain, this will call the wls_managedserver and wls_adminserver types
 
     orawls::control{'startWLSAdminServer12c':
       domain_name                => "Wls12c",
@@ -992,13 +1139,13 @@ or when you set the defaults hiera variables
      }
 
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
- 
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
+
     $default = {}
     $control_instances = hiera('control_instances', {})
     create_resources('orawls::control',$control_instances, $default)
- 
- 
+
+
 vagrantcentos64.example.com.yaml
 
     ---
@@ -1038,7 +1185,7 @@ or when you set the defaults hiera variables
          adminserver_port:     7001
          nodemanager_port:     5556
          log_output:           true
-    
+
 
 when you just have one WebLogic domain on a server
 
@@ -1049,9 +1196,9 @@ when you just have one WebLogic domain on a server
     domain_adminserver_port:    7001
     domain_nodemanager_port:    5556
     domain_wls_password:        "weblogic1"
-    
-    
-        
+
+
+
     # startup adminserver for extra configuration
     control_instances:
       'startWLSAdminServer':
@@ -1064,18 +1211,18 @@ when you just have one WebLogic domain on a server
 
 
 
-###urandomfix 
+### urandomfix
 __orawls::urandomfix__ Linux low on entropy or urandom fix can cause certain operations to be very slow. Encryption operations need entropy to ensure randomness. Entropy is generated by the OS when you use the keyboard, the mouse or the disk.
 
 If an encryption operation is missing entropy it will wait until enough is generated.
 
-three options  
--  use rngd service (use this wls::urandomfix class)  
--  set java.security in JDK ( jre/lib/security in my jdk7 module )  
--  set -Djava.security.egd=file:/dev/./urandom param 
+three options
+-  use rngd service (use this wls::urandomfix class)
+-  set java.security in JDK ( jre/lib/security in my jdk7 module )
+-  set -Djava.security.egd=file:/dev/./urandom param
 
 
-###storeuserconfig 
+### storeuserconfig
 __orawls::storeuserconfig__ Creates WLST user config for WLST , this way you don't need to know the weblogic password.
 when you set the defaults hiera variables
 
@@ -1088,13 +1235,13 @@ when you set the defaults hiera variables
       log_output                 => false,
     }
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
- 
-    notify { 'class userconfig':} 
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
+
+    notify { 'class userconfig':}
     $default_params = {}
     $userconfig_instances = hiera('userconfig_instances', {})
     create_resources('orawls::storeuserconfig',$userconfig_instances, $default_params)
- 
+
 vagrantcentos64.example.com.yaml
 or when you set the defaults hiera variables
 
@@ -1117,15 +1264,15 @@ when you just have one WebLogic domain on a server
     domain_adminserver_address: "localhost"
     domain_adminserver_port:    7001
     domain_wls_password:        "weblogic1"
-    
+
     ---
     userconfig_instances:
       'Wls12c':
          log_output:           true
          user_config_dir:      '/home/oracle'
 
-###fmwlogdir 
-__orawls::fmwlogdir__ Change a log folder location of a FMW server  
+### fmwlogdir
+__orawls::fmwlogdir__ Change a log folder location of a FMW server
 when you set the defaults hiera variables
 
     orawls::fmwlogdir{'AdminServer':
@@ -1142,12 +1289,12 @@ when you set the defaults hiera variables
       log_output             => false,
     }
 
-Same configuration but then with Hiera ( need to have puppet > 3.0 )    
- 
+Same configuration but then with Hiera ( need to have puppet > 3.0 )
+
     $default_params = {}
     $fmwlogdir_instances = hiera('fmwlogdir_instances', {})
     create_resources('orawls::fmwlogdir',$fmwlogdir_instances, $default_params)
- 
+
 vagrantcentos64.example.com.yaml
 or when you set the defaults hiera variables
 
@@ -1159,14 +1306,14 @@ or when you set the defaults hiera variables
 
 
 
-###resourceadapter 
-__orawls::resourceadapter__ Add a Resource adapter plan for Aq ,DB or JMS with some entries  
+### resourceadapter
+__orawls::resourceadapter__ Add a Resource adapter plan for Aq ,DB or JMS with some entries
 when you set the defaults hiera variables
- 
+
     $default_params = {}
     $resource_adapter_instances = hiera('resource_adapter_instances', {})
     create_resources('orawls::resourceadapter',$resource_adapter_instances, $default_params)
- 
+
 vagrantcentos64.example.com.yaml
 or when you set the defaults hiera variables
 
@@ -1197,11 +1344,11 @@ or when you set the defaults hiera variables
         adapter_entry_value:       'jdbc/hrDS'
 
 
-###fmwcluster
-__orawls::utils::fmwcluster__ convert existing cluster to a osb or soa suite cluster (BPM is optional) and also convert BAM to a BAM cluster  
-see this for an example https://github.com/biemond/biemond-orawls-vagrant-solaris-soa  
-you need to create a osb, soa or bam cluster with some managed servers first 
-for the osb or soa suite managed servers make sure to set the coherence arguments parameters  
+### fmwcluster
+__orawls::utils::fmwcluster__ convert existing cluster to a OSB or SOA suite cluster (BPM is optional) and also convert BAM to a BAM cluster. This will also work for OIM / OAM cluster
+
+You first need to create some OSB, SOA or BAM clusters and add some managed servers to these clusters
+for OSB 11g or SOA Suite 11g managed servers make sure to also set the coherence arguments parameters
 
 
     $default_params = {}
@@ -1210,19 +1357,38 @@ for the osb or soa suite managed servers make sure to set the coherence argument
 
 hiera configuration
 
+    # FMW 11g cluster
     fmw_cluster_instances:
       'soaCluster':
-         domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/soa_basedomain"
+         domain_name:          "soa_domain"
          soa_cluster_name:     "SoaCluster"
          bam_cluster_name:     "BamCluster"
          osb_cluster_name:     "OsbCluster"
-         log_output:           true
+         log_output:           *logoutput
          bpm_enabled:          true
          bam_enabled:          true
          soa_enabled:          true
          osb_enabled:          true
+         repository_prefix:    "DEV"
 
-###fmwclusterjrf
+    # FMW 12.1.3 cluster
+    fmw_cluster_instances:
+      'soaCluster':
+        domain_name:          "soa_domain"
+        soa_cluster_name:     "SoaCluster"
+        bam_cluster_name:     "BamCluster"
+        osb_cluster_name:     "OsbCluster"
+        log_output:           *logoutput
+        bpm_enabled:          true
+        bam_enabled:          true
+        soa_enabled:          true
+        osb_enabled:          true
+        b2b_enabled:          true
+        ess_enabled:          true
+        repository_prefix:    "DEV"
+
+
+### fmwclusterjrf
 __orawls::utils::fmwclusterjrf__ convert existing cluster to a ADF/JRF cluster
 you need to create a wls cluster with some managed servers first
 
@@ -1238,7 +1404,7 @@ hiera configuration
          jrf_target_name:      "WebCluster"
          log_output:           *logoutput
 
-###webtier
+### webtier
 __orawls::utils::webtier__ add an OHS instance to a WebLogic Domain and in the Enterprise Manager, optional with OHS OAM Webgate
 
     $default_params = {}
@@ -1262,7 +1428,7 @@ hiera configuration
           instance_name:         'ohs1'
           machine_name:          'Node1'
 
-###oimconfig
+### oimconfig
 __orawls::utils::oimconfig__ Configure OIM , oim server, design or remote configuration
 
     $default_params = {}
@@ -1284,7 +1450,7 @@ __orawls::utils::oimconfig__ Configure OIM , oim server, design or remote config
         repository_prefix:          "DEV"
         repository_password:        "Welcome01"
 
-###instance
+### instance
 __orawls::oud::instance__ Configure OUD (Oracle Unified Directory) ldap instance
 
     $default_params = {}
@@ -1313,7 +1479,7 @@ __orawls::oud::instance__ Configure OUD (Oracle Unified Directory) ldap instance
         oud_ldapsPort:              2636
         log_output:                 *logoutput
 
-###oud_control
+### oud_control
 __orawls::oud::control__ Stop or start an OUD (Oracle Unified Directory) ldap instance
 
     $default_params = {}
@@ -1322,18 +1488,18 @@ __orawls::oud::control__ Stop or start an OUD (Oracle Unified Directory) ldap in
 
     oud_control_instances:
       'instance1':
-        oud_instances_home_dir:     '/opt/oracle/oud_instances' 
+        oud_instances_home_dir:     '/opt/oracle/oud_instances'
         oud_instance_name:          'instance1'
         action:                     'start'
         log_output:                 *logoutput
 
-##Types and providers
+## Types and providers
 
-It needs wls_setting and you need to create one for every domain. When domain is not provided on the type it will use the default entry.
+All wls types needs a wls_setting definition, this is a pointer to an WebLogic AdminServer and you need to create one for every WebLogic domain. When you don't provide a wls_setting identifier in the title of the weblogic type then it will use default as identifier.
 
 ###wls_setting
 
-required for all the weblogic type/providers
+required for all the weblogic type/providers, this is a pointer to an WebLogic AdminServer.
 
       wls_setting { 'default':
         user               => 'oracle',
@@ -1352,12 +1518,13 @@ required for all the weblogic type/providers
         post_classpath:     "/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar"
       }
 
-###wls_domain
+### wls_domain
 
-it needs wls_setting and when domain is not provided it will use the 'default'. Probably you need to restart the AdminServer
+it needs wls_setting and when identifier is not provided it will use the 'default'. Probably after changing the domain you need to restart the AdminServer or subscribe for a restart to this change with the wls_adminserver type
 
 or use puppet resource wls_domain
 
+    # In this case it will use default as wls_setting identifier
     wls_domain { 'Wls1036':
       ensure                      => 'present',
       jpa_default_provider        => 'org.eclipse.persistence.jpa.PersistenceProvider',
@@ -1371,6 +1538,7 @@ or use puppet resource wls_domain
       log_rotationtype            => 'bySize',
       security_crossdomain        => '0',
     }
+    # In this case it will use domain2 as wls_setting identifier
     wls_domain { 'domain2/Wls11g':
       ensure                      => 'present',
       jpa_default_provider        => 'org.apache.openjpa.persistence.PersistenceProviderImpl',
@@ -1392,6 +1560,8 @@ in hiera
     $wls_domain_instances = hiera('wls_domain_instances', {})
     create_resources('wls_domain',$wls_domain_instances, $default_params)
 
+    # 'Wls1036' will use default as wls_setting identifier
+    # 'Wls11g' will use domain2 as wls_setting identifier
     wls_domain_instances:
       'Wls1036':
         ensure:                      'present'
@@ -1419,36 +1589,147 @@ in hiera
         security_crossdomain:        '1'
 
 
+### wls_adminserver
 
-###wls_deployment
+type for adminserver control like start, running, abort and stop.
+also supports subscribe with refreshonly
 
-it needs wls_setting and when domain is not provided it will use the 'default'
 
+    # for this type you won't need a wls_setting identifier
+    wls_adminserver{'AdminServer_Wls1036:':
+      ensure                    => 'running',   #running|start|abort|stop
+      server_name               => hiera('domain_adminserver'),
+      domain_name               => hiera('domain_name'),
+      domain_path               => "/opt/oracle/wlsdomains/domains/Wls1036",
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      nodemanager_address       => hiera('domain_adminserver_address'),
+      nodemanager_port          => hiera('domain_nodemanager_port'),
+      jsse_enabled              => false,
+      custom_trust              => false,
+    }
+
+with JSSE and custom trust
+
+    # for this type you won't need a wls_setting identifier
+    wls_adminserver{'AdminServer_Wls1036:':
+      ensure                    => 'running',   #running|start|abort|stop
+      server_name               => hiera('domain_adminserver'),
+      domain_name               => hiera('domain_name'),
+      domain_path               => "/opt/oracle/wlsdomains/domains/Wls1036",
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      nodemanager_address       => hiera('domain_adminserver_address'),
+      nodemanager_port          => hiera('domain_nodemanager_port'),
+      jsse_enabled              => hiera('wls_jsse_enabled'),
+      custom_trust              => hiera('wls_custom_trust'),
+      trust_keystore_file       => hiera('wls_trust_keystore_file'),
+      trust_keystore_passphrase => hiera('wls_trust_keystore_passphrase'),
+    }
+
+subscribe to a wls_domain or wls_authenticaton_provider event
+
+    # for this type you won't need a wls_setting identifier
+    wls_adminserver{'AdminServer_Wls1036:':
+      ensure                    => 'running',   #running|start|abort|stop
+      server_name               => hiera('domain_adminserver'),
+      domain_name               => hiera('domain_name'),
+      domain_path               => "/opt/oracle/wlsdomains/domains/Wls1036",
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      nodemanager_address       => hiera('domain_adminserver_address'),
+      nodemanager_port          => hiera('domain_nodemanager_port'),
+      jsse_enabled              => hiera('wls_jsse_enabled'),
+      custom_trust              => hiera('wls_custom_trust'),
+      trust_keystore_file       => hiera('wls_trust_keystore_file'),
+      trust_keystore_passphrase => hiera('wls_trust_keystore_passphrase'),
+      refreshonly               => true,
+      subscribe                 => Wls_domain['Wls1036'],
+    }
+
+### wls_managedserver
+
+type for managed server control like start, running, abort and stop a managed server or a cluster.
+also supports subscribe with refreshonly
+
+
+    # for this type you won't need a wls_setting identifier
+    wls_managedserver{'JMSServer1_Wls1036:':
+      ensure                    => 'running',   #running|start|abort|stop
+      target                    => 'Server', #Server|Cluster
+      server_name               => 'JMSServer1',
+      domain_name               => hiera('domain_name'),
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      adminserver_address       => hiera('domain_adminserver_address'),
+      adminserver_port          => hiera('domain_adminserver_port'),
+    }
+
+
+subscribe to a wls_domain or wls_authenticaton_provider event
+
+    # for this type you won't need a wls_setting identifier
+    wls_managedserver{'JMSServer1_Wls1036':
+      ensure                    => 'running',   #running|start|abort|stop
+      target                    => 'Server',    #Server|Cluster
+      server_name               => 'JMSServer1',
+      domain_name               => hiera('domain_name'),
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      adminserver_address       => hiera('domain_adminserver_address'),
+      adminserver_port          => hiera('domain_adminserver_port'),
+      refreshonly               => true,
+      subscribe                 => Wls_domain['Wls1036'],
+    }
+
+
+### wls_deployment
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 or use puppet resource wls_deployment
 
+
+    # 'jersey-bundle' will use default as wls_setting identifier
     wls_deployment { 'jersey-bundle':
       ensure            => 'present',
       deploymenttype    => 'Library',
-      target            => 'AdminServer,WebCluster',
-      targettype        => 'Server,Cluster',
+      target            => ['AdminServer','WebCluster'],
+      targettype        => ['Server','Cluster'],
       versionidentifier => '1.18@1.18.0.0',
       localpath         =>  '/vagrant/jersey-bundle-1.18.war',
     }
+    # this will use default as wls_setting identifier
     wls_deployment { 'webapp':
       ensure            => 'present',
       deploymenttype    => 'AppDeployment',
-      target            => 'WebCluster',
-      targettype        => 'Cluster',
+      target            => ['WebCluster'],
+      targettype        => ['Cluster'],
       localpath         => '/vagrant/webapp.war',
     }
 
 or add a version
 
+    # this will use default as wls_setting identifier
     wls_deployment { 'webapp':
       ensure            => 'present',
       deploymenttype    => 'AppDeployment',
-      target            => 'WebCluster',
-      targettype        => 'Cluster',
+      target            => ['WebCluster'],
+      targettype        => ['Cluster'],
       versionidentifier => '1.1@1.1.0.0',
       localpath         => '/vagrant/webapp.war',
     }
@@ -1460,48 +1741,60 @@ in hiera
     $deployment_instances = hiera('deployment_library_instances', $default_params)
     create_resources('wls_deployment',$deployment_instances, $default_params)
 
+    # this will use default as wls_setting identifier
     deployment_library_instances:
       'jersey-bundle':
         ensure:            'present'
         deploymenttype:    'Library'
         versionidentifier: '1.18@1.18.0.0'
-        target:            'AdminServer,WebCluster'
-        targettype:        'Server,Cluster'
+        target:
+          - 'AdminServer'
+          - 'WebCluster'
+        targettype:
+          - 'Server'
+          - 'Cluster'
         localpath:         '/vagrant/jersey-bundle-1.18.war'
 
     $default_params = {}
     $deployment_instances = hiera('deployment_application_instances', $default_params)
     create_resources('wls_deployment',$deployment_instances, $default_params)
 
+    # this will use default as wls_setting identifier
     deployment_application_instances:
       'webapp':
         ensure:            'present'
         deploymenttype:    'AppDeployment'
         versionidentifier: '1.1@1.1.0.0'
-        target:            'AdminServer,WebCluster'
-        targettype:        'Server,Cluster'
+        target:
+          - 'AdminServer'
+          - 'WebCluster'
+        targettype:
+          - 'Server'
+          - 'Cluster'
         localpath:         '/vagrant/webapp.war'
 
 
-###wls_user
+### wls_user
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_user
 
+    # this will use default as wls_setting identifier
     wls_user { 'OracleSystemUser':
       ensure                 => 'present',
       authenticationprovider => 'DefaultAuthenticator',
       description            => 'Oracle application software system user.',
       realm                  => 'myrealm',
     }
+    # this will use default as wls_setting identifier
     wls_user { 'default/testuser1':
       ensure                 => 'present',
       authenticationprovider => 'DefaultAuthenticator',
       description            => 'testuser1',
       realm                  => 'myrealm',
     }
-
+    # this will use domain2 as wls_setting identifier
     wls_user { 'domain2/testuser1':
       ensure                 => 'present',
       authenticationprovider => 'DefaultAuthenticator',
@@ -1516,7 +1809,8 @@ in hiera
     $user_instances = hiera('user_instances', {})
     create_resources('wls_user',$user_instances, $default_params)
 
-
+    # testuser1 will use default as wls_setting identifier
+    # testuser2 will use domain2 as wls_setting identifier
     user_instances:
       'testuser1':
         ensure:                 'present'
@@ -1531,25 +1825,27 @@ in hiera
         realm:                  'myrealm'
         description:            'my test user'
 
-###wls_group
+### wls_group
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_group
 
+    # this will use default as wls_setting identifier
     wls_group { 'SuperUsers':
       ensure                 => 'present',
       authenticationprovider => 'DefaultAuthenticator',
       description            => 'SuperUsers',
       realm                  => 'myrealm',
-      users                  => 'testuser2',
+      users                  => ['testuser2'],
     }
+    # this will use default as wls_setting identifier
     wls_group { 'TestGroup':
       ensure                 => 'present',
       authenticationprovider => 'DefaultAuthenticator',
       description            => 'TestGroup',
       realm                  => 'myrealm',
-      users                  => 'testuser1,testuser2',
+      users                  => ['testuser1','testuser2'],
     }
 
 in hiera
@@ -1558,32 +1854,47 @@ in hiera
     $group_instances = hiera('group_instances', {})
     create_resources('wls_group',$group_instances, $default_params)
 
+    # this will use default as wls_setting identifier
     group_instances:
       'TestGroup':
         ensure:                 'present'
         authenticationprovider: 'DefaultAuthenticator'
         description:            'TestGroup'
         realm:                  'myrealm'
-        users:                  'testuser1,testuser2'
+        users:
+          - 'testuser1'
+          - 'testuser2'
       'SuperUsers':
         ensure:                 'present'
         authenticationprovider: 'DefaultAuthenticator'
         description:            'SuperUsers'
         realm:                  'myrealm'
-        users:                  'testuser2'
+        users:
+          - 'testuser2'
 
-###wls_authentication_provider
+### wls_authentication_provider
 
-it needs wls_setting and when domain is not provided it will use the 'default' and probably needs a reboot
+it needs wls_setting and when identifier is not provided it will use the 'default' and probably after the creation the AdminServer needs a reboot or subscribe to a restart with the wls_adminserver type
 
 only control_flag is a property, the rest are parameters and only used in a create action
 
+to provide a list of token types to create provide a "::" seperated list for attribute 'ActiveTypes'
+
 or use puppet resource wls_authentication_provider
 
+
+    # this will use default as wls_setting identifier
     wls_authentication_provider { 'DefaultAuthenticator':
       ensure       => 'present',
       control_flag => 'SUFFICIENT',
     }
+    wls_authentication_provider { 'DefaultIdentityAsserter':
+      ensure            => 'present',
+      providerclassname => 'weblogic.security.providers.authentication.DefaultIdentityAsserter',
+      attributes:       =>  'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes',
+      attributesvalues  =>  '1;1;CN;AuthenticatedUser::X.509',
+    }
+    # this will use default as wls_setting identifier
     wls_authentication_provider { 'ldap':
       ensure            => 'present',
       control_flag      => 'SUFFICIENT',
@@ -1599,45 +1910,53 @@ in hiera
     $authentication_provider_instances = hiera('authentication_provider_instances', {})
     create_resources('wls_authentication_provider',$authentication_provider_instances, $default_params)
 
-
+    # this will use default as wls_setting identifier
     authentication_provider_instances:
       'DefaultAuthenticator':
         ensure:             'present'
         control_flag:       'SUFFICIENT'
+      'DefaultIdentityAsserter':
+        ensure:             'present'
+        providerclassname:  'weblogic.security.providers.authentication.DefaultIdentityAsserter'
+        attributes:         'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes'
+        attributesvalues:   '1;1;CN;AuthenticatedUser::X.509'
       'ldap':
         ensure:             'present'
         control_flag:       'SUFFICIENT'
         providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
-        attributes:         'Principal,Host,Port,CacheTTL,CacheSize,MaxGroupMembershipSearchLevel,SSLEnabled'
-        attributesvalues:   'ldapuser,ldapserver,389,60,1024,4,true'
+        attributes:         'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled'
+        attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;true'
 
 
 
-###wls_machine
+### wls_machine
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_machine
 
-      wls_machine { 'test2':
-        ensure        => 'present',
-        listenaddress => '10.10.10.10',
-        listenport    => '5556',
-        machinetype   => 'UnixMachine',
-        nmtype        => 'SSL',
-      }
-
-      wls_machine { 'domain2/test2':
-        ensure        => 'present',
-        listenaddress => '10.10.10.10',
-        listenport    => '5556',
-        machinetype   => 'UnixMachine',
-        nmtype        => 'SSL',
-      }
+    # this will use default as wls_setting identifier
+    wls_machine { 'test2':
+      ensure        => 'present',
+      listenaddress => '10.10.10.10',
+      listenport    => '5556',
+      machinetype   => 'UnixMachine',
+      nmtype        => 'SSL',
+    }
+    # this will use domain2 as wls_setting identifier
+    wls_machine { 'domain2/test2':
+      ensure        => 'present',
+      listenaddress => '10.10.10.10',
+      listenport    => '5556',
+      machinetype   => 'UnixMachine',
+      nmtype        => 'SSL',
+    }
 
 
 in hiera
 
+    # Node1 will use default as wls_setting identifier
+    # Node2 will use domain2 as wls_setting identifier
     machines_instances:
       'Node1':
         ensure:         'present'
@@ -1653,38 +1972,80 @@ in hiera
         nmtype:         'SSL'
 
 
-###wls_server
+### wls_server
 
-it needs wls_setting and when domain is not provided it will use the 'default' and probably needs a reboot
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_server
 
-      wls_server { 'wlsServer3':
-        ensure                         => 'present',
-        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
-        listenaddress                  => '10.10.10.100',
-        listenport                     => '8002',
-        logfilename                    => '/data/logs/wlsServer3.log',
-        machine                        => 'Node1',
-        sslenabled                     => '0',
-        sslhostnameverificationignored => '1',
-        ssllistenport                  => '7002',
-      }
+    # this will use default as wls_setting identifier
+    wls_server { 'wlsServer1':
+      ensure                            => 'present',
+      arguments                         => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out',
+      jsseenabled                       => '0',
+      listenaddress                     => '10.10.10.100',
+      listenport                        => '8001',
+      machine                           => 'Node1',
+      sslenabled                        => '0',
+    }
 
-      wls_server { 'domain2/wlsServer3':
-        ensure                         => 'present',
-        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
-        listenaddress                  => '10.10.10.100',
-        listenport                     => '8002',
-        logfilename                    => '/data/logs/wlsServer3.log',
-        machine                        => 'Node1',
-        sslenabled                     => '0',
-        sslhostnameverificationignored => '1',
-        ssllistenport                  => '7002',
-      }
+or with log parameters and ssl
+
+    # this will use default as wls_setting identifier
+    wls_server { 'default/wlsServer2':
+      ensure                            => 'present',
+      arguments                         => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer2.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer2_err.out',
+      jsseenabled                       => '0',
+      listenaddress                     => '10.10.10.200',
+      listenport                        => '8001',
+      log_file_min_size                 => '2000',
+      log_filecount                     => '10',
+      log_number_of_files_limited       => '1',
+      log_rotate_logon_startup          => '1',
+      log_rotationtype                  => 'bySize',
+      logfilename                       => '/var/log/weblogic/wlsServer2.log',
+      machine                           => 'Node2',
+      sslenabled                        => '1',
+      sslhostnameverificationignored    => '1',
+      ssllistenport                     => '8201',
+      two_way_ssl                       => '0'
+      client_certificate_enforced       => '0'
+    }
+
+or with JSSE with custom identity and trust
+
+    # this will use domain2 as wls_setting identifier
+    wls_server { 'domain2/wlsServer2':
+      ensure                                => 'present',
+      arguments                             => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer2.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer2_err.out',
+      listenaddress                         => '10.10.10.200',
+      listenport                            => '8001',
+      log_file_min_size                     => '2000',
+      log_filecount                         => '10',
+      log_number_of_files_limited           => '1',
+      log_rotate_logon_startup              => '1',
+      log_rotationtype                      => 'bySize',
+      logfilename                           => '/var/log/weblogic/wlsServer2.log',
+      machine                               => 'Node2',
+      sslenabled                            => '1',
+      sslhostnameverificationignored        => '1',
+      ssllistenport                         => '8201',
+      two_way_ssl                           => '0'
+      client_certificate_enforced           => '0'
+      jsseenabled                           => '1',
+      custom_identity                       => '1',
+      custom_identity_alias                 => 'node2',
+      custom_identity_keystore_filename     => '/vagrant/identity_node2.jks',
+      custom_identity_keystore_passphrase   => 'welcome',
+      custom_identity_privatekey_passphrase => 'welcome',
+      trust_keystore_file                   => '/vagrant/truststore.jks',
+      trust_keystore_passphrase             => 'welcome',
+    }
+
 
 in hiera
 
+    # this will use default as wls_setting identifier
     server_instances:
       'wlsServer1':
          ensure:                         'present'
@@ -1697,17 +2058,74 @@ in hiera
          jsseenabled:                    '0'
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
-      'domain2/wlsServer1':
-         ensure:                         'present'
-         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
-         listenaddress:                  '10.10.10.100'
-         listenport:                     '8001'
-         logfilename:                    '/data/logs/wlsServer1.log'
-         machine:                        'Node1'
-         jsseenabled:                    '0'
-         sslenabled:                     '1'
-         ssllistenport:                  '8201'
-         sslhostnameverificationignored: '1'
+         two_way_ssl:                    '0'
+         client_certificate_enforced:    '0'
+
+or with log parameters
+
+    # this will use default as wls_setting identifier
+    server_instances:
+      'wlsServer1':
+        ensure:                         'present'
+        arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
+        listenaddress:                         '10.10.10.100'
+        listenport:                            '8001'
+        logfilename:                           '/var/log/weblogic/wlsServer1.log'
+        log_file_min_size:                     '2000'
+        log_filecount:                         '10'
+        log_number_of_files_limited:           '1'
+        log_rotate_logon_startup:              '1'
+        log_rotationtype:                      'bySize'
+        machine:                               'Node1'
+        sslenabled:                            '1'
+        ssllistenport:                         '8201'
+        sslhostnameverificationignored:        '1'
+        jsseenabled:                           '1'
+
+
+You can also pass server arguments as an array, as it makes it easier to use references in YAML.
+
+    server_vm_args_permsize:      &server_vm_args_permsize     '-XX:PermSize=256m'
+    server_vm_args_max_permsize:  &server_vm_args_max_permsize '-XX:MaxPermSize=256m'
+    server_vm_args_memory:        &server_vm_args_memory       '-Xms752m'
+    server_vm_args_max_memory:    &server_vm_args_max_memory   '-Xmx752m'
+
+    # this will use default as wls_setting identifier
+    server_instances:
+      'wlsServer1':
+        ensure:                                'present'
+        arguments:
+               - *server_vm_args_permsize
+               - *server_vm_args_max_permsize
+               - *server_vm_args_memory
+               - *server_vm_args_max_memory
+               - '-Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out'
+               - '-Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out'
+        listenaddress:                         '10.10.10.100'
+        listenport:                            '8001'
+        logfilename:                           '/var/log/weblogic/wlsServer1.log'
+        machine:                               'Node1'
+        sslenabled:                            '1'
+        ssllistenport:                         '8201'
+        sslhostnameverificationignored:        '1'
+        jsseenabled:                           '1'
+      'wlsServer2':
+        ensure:                                'present'
+        arguments:
+               - *server_vm_args_permsize
+               - *server_vm_args_max_permsize
+               - *server_vm_args_memory
+               - *server_vm_args_max_memory
+               - '-Dweblogic.Stdout=/var/log/weblogic/wlsServer2.out'
+               - '-Dweblogic.Stderr=/var/log/weblogic/wlsServer2_err.out'
+        listenport:                            '8001'
+        logfilename:                           '/var/log/weblogic/wlsServer2.log'
+        machine:                               'Node2'
+        sslenabled:                            '1'
+        ssllistenport:                         '8201'
+        sslhostnameverificationignored:        '1'
+        listenaddress:                         '10.10.10.200'
+        jsseenabled:                           '1'
 
 or with custom identity and custom truststore
 
@@ -1717,6 +2135,7 @@ or with custom identity and custom truststore
     wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
 
 
+    # this will use default as wls_setting identifier
     server_instances:
       'wlsServer1':
         ensure:                                'present'
@@ -1728,7 +2147,7 @@ or with custom identity and custom truststore
         sslenabled:                            '1'
         ssllistenport:                         '8201'
         sslhostnameverificationignored:        '1'
-        jsseenabled:                           '1' 
+        jsseenabled:                           '1'
         custom_identity:                       '1'
         custom_identity_keystore_filename:     '/vagrant/identity_node1.jks'
         custom_identity_keystore_passphrase:   'welcome'
@@ -1737,13 +2156,14 @@ or with custom identity and custom truststore
         trust_keystore_file:                   *wls_trust_keystore_file
         trust_keystore_passphrase:             *wls_trust_keystore_passphrase
 
- 
-###wls_server_channel
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the server name    
+### wls_server_channel
+
+it needs wls_setting and when identifier is not provided it will use the 'default', the title must also contain the server name
 
 or use puppet resource wls_server_channel
 
+    # this will use default as wls_setting identifier
     wls_server_channel { 'wlsServer1:Channel-Cluster':
       ensure           => 'present',
       enabled          => '1',
@@ -1755,6 +2175,7 @@ or use puppet resource wls_server_channel
       publicaddress    => '10.10.10.100',
       tunnelingenabled => '0',
     }
+    # this will use default as wls_setting identifier
     wls_server_channel { 'wlsServer2:Channel-Cluster':
       ensure           => 'present',
       enabled          => '1',
@@ -1767,6 +2188,7 @@ or use puppet resource wls_server_channel
 
 in hiera
 
+    # this will use default as wls_setting identifier
     server_channel_instances:
       'wlsServer1:Channel-Cluster':
         ensure:           'present'
@@ -1785,133 +2207,263 @@ in hiera
         listenport:       '8003'
         outboundenabled:  '0'
         protocol:         'cluster-broadcast'
-        tunnelingenabled: '0'    
+        tunnelingenabled: '0'
 
 
-###wls_cluster
+### wls_cluster
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_cluster
 
-      wls_cluster { 'WebCluster':
-        ensure           => 'present',
-        messagingmode    => 'unicast',
-        migrationbasis   => 'consensus',
-        servers          => 'wlsServer3,wlsServer4',
-        multicastaddress => '239.192.0.0',
-        multicastport    => '7001',
-      }
-
-      wls_cluster { 'WebCluster2':
-        ensure                  => 'present',
-        messagingmode           => 'unicast',
-        migrationbasis          => 'consensus',
-        servers                 => 'wlsServer3,wlsServer4',
-        unicastbroadcastchannel => 'channel',
-        multicastaddress        => '239.192.0.0',
-        multicastport           => '7001',
-      }
+    # this will use default as wls_setting identifier
+    wls_cluster { 'WebCluster':
+      ensure           => 'present',
+      messagingmode    => 'unicast',
+      migrationbasis   => 'consensus',
+      servers          => ['wlsServer3','wlsServer4'],
+      multicastaddress => '239.192.0.0',
+      multicastport    => '7001',
+    }
+    # this will use default as wls_setting identifier
+    wls_cluster { 'WebCluster2':
+      ensure                  => 'present',
+      messagingmode           => 'unicast',
+      migrationbasis          => 'consensus',
+      servers                 => ['wlsServer3','wlsServer4'],
+      unicastbroadcastchannel => 'channel',
+      multicastaddress        => '239.192.0.0',
+      multicastport           => '7001',
+    }
 
 in hiera
 
-     cluster_instances:
+    # this will use default as wls_setting identifier
+    cluster_instances:
       'WebCluster':
         ensure:         'present'
         messagingmode:  'unicast'
         migrationbasis: 'consensus'
-        servers:        'wlsServer1,wlsServer2'
+        servers:
+          - 'wlsServer1'
+          - 'wlsServer2'
 
-###wls_virtual_host
+### wls_coherence_cluster
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
-or use puppet resource wls_virtual_host
+or use puppet resource wls_coherence_cluster
 
-    wls_virtual_host { 'default/WS':
-      ensure     => 'present',
-      channel    => 'HTTP',
-      target     => 'WebCluster',
-      targettype => 'Cluster',
+    # this will use default as wls_setting identifier
+    wls_coherence_cluster { 'WebCoherenceCluster':
+      ensure         => 'present',
+      clusteringmode => 'unicast',
+      multicastport  => '33389',
+      target         => ['WebCluster'],
+      targettype     => ['Cluster'],
+      unicastport    => '9999',
+    }
+    wls_coherence_cluster { 'defaultCoherenceCluster':
+      ensure         => 'present',
+      clusteringmode => 'unicast',
+      multicastport  => '33387',
+      unicastport    => '8888',
     }
 
 in hiera
 
+    $default_params = {}
+    $coherence_cluster_instances = hiera('coherence_cluster_instances', {})
+    create_resources('wls_coherence_cluster',$coherence_cluster_instances, $default_params)
+
+
+    coherence_cluster_instances:
+      'WebCoherenceCluster':
+        ensure:         'present'
+        clusteringmode: 'unicast'
+        multicastport:  '33389'
+        target:         ['WebCluster']
+        targettype:     ['Cluster']
+        unicastport:    '9999'
+
+
+
+### wls_server_template
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_server_template
+
+    wls_server_template { 'default/ServerTemplateWeb':
+      ensure        => 'present',
+      arguments     => ['-XX:PermSize=256m','-XX:MaxPermSize=256m'],
+      listenport    => '9101',
+      sslenabled    => '1',
+      ssllistenport => '9102',
+    }
+
+in hiera
+
+    $default_params = {}
+    $server_template_instances = hiera('server_template_instances', {})
+    create_resources('wls_server_template',$server_template_instances, $default_params)
+
+
+    server_vm_args_permsize:      &server_vm_args_permsize     '-XX:PermSize=256m'
+    server_vm_args_max_permsize:  &server_vm_args_max_permsize '-XX:MaxPermSize=256m'
+    server_vm_args_memory:        &server_vm_args_memory       '-Xms752m'
+    server_vm_args_max_memory:    &server_vm_args_max_memory   '-Xmx752m'
+
+
+    server_template_instances:
+     'ServerTemplateWeb':
+      ensure:        'present'
+      arguments:
+                     - *server_vm_args_permsize
+                     - *server_vm_args_max_permsize
+                     - *server_vm_args_memory
+                     - *server_vm_args_max_memory
+      listenport:    '9101'
+      sslenabled:    '1'
+      ssllistenport: '9102'
+
+
+### wls_dynamic_cluster
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_dynamic_cluster
+
+    wls_dynamic_cluster { 'DynamicCluster':
+      ensure               => 'present',
+      maximum_server_count => '2',
+      nodemanager_match    => 'Node1,Node2',
+      server_name_prefix   => 'DynCluster-',
+      server_template_name => 'ServerTemplateWeb',
+    }
+
+in hiera
+
+    $default_params = {}
+    $dynamic_cluster_instances = hiera('dynamic_cluster_instances', {})
+    create_resources('wls_dynamic_cluster',$dynamic_cluster_instances, $default_params)
+
+    dynamic_cluster_instances:
+      'DynamicCluster':
+        ensure:               'present'
+        maximum_server_count: '2'
+        nodemanager_match:    'Node1,Node2'
+        server_name_prefix:   'DynCluster-'
+        server_template_name: 'ServerTemplateWeb'
+
+### wls_virtual_host
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_virtual_host
+
+    # this will use default as wls_setting identifier
+    wls_virtual_host { 'default/WS':
+      ensure             => 'present',
+      channel            => 'HTTP',
+      target             => ['WebCluster'],
+      targettype         => ['Cluster'],
+      virtual_host_names => ['admin.example.com','10.10.10.10'],
+    }
+
+in hiera
+
+    # this will use default as wls_setting identifier
     virtual_host_instances:
      'WS':
        ensure:     'present'
        channel:    'HTTP'
-       target:     'WebCluster'
-       targettype: 'Cluster'
+       target:
+         - 'WebCluster'
+       targettype:
+         - 'Cluster'
+       virtual_host_names:
+         - 'admin.example.com'
+         - '10.10.10.10'
 
-###wls_workmanager_constaint
+### wls_workmanager_constaint
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_workmanager_constaint
 
+    # this will use default as wls_setting identifier
     wls_workmanager_constraint { 'default/CapacityConstraint':
       ensure          => 'present',
       constrainttype  => 'Capacity',
       constraintvalue => '20',
-      target          => 'WebCluster',
-      targettype      => 'Cluster',
+      target          => ['WebCluster'],
+      targettype      => ['Cluster'],
     }
+    # this will use default as wls_setting identifier
     wls_workmanager_constraint { 'default/MaxThreadsConstraint':
       ensure          => 'present',
       constrainttype  => 'MaxThreadsConstraint',
       constraintvalue => '5',
-      target          => 'WebCluster',
-      targettype      => 'Cluster',
+      target          => ['WebCluster'],
+      targettype      => ['Cluster'],
     }
+    # this will use default as wls_setting identifier
     wls_workmanager_constraint { 'default/MinThreadsConstraint':
       ensure          => 'present',
       constrainttype  => 'MinThreadsConstraint',
       constraintvalue => '2',
-      target          => 'WebCluster',
-      targettype      => 'Cluster',
+      target          => ['WebCluster'],
+      targettype      => ['Cluster'],
     }
 
 in hiera
 
+    # this will use default as wls_setting identifier
     workmanager_constraint_instances:
       'CapacityConstraint':
         ensure:          'present'
         constraintvalue: '20'
-        target:          'WebCluster'
-        targettype:      'Cluster'
+        target:
+          - 'WebCluster'
+        targettype:
+          - 'Cluster'
         constrainttype:  'Capacity'
       'MaxThreadsConstraint':
         ensure:          'present'
         constraintvalue: '5'
-        target:          'WebCluster'
-        targettype:      'Cluster'
+        target:
+          - 'WebCluster'
+        targettype:
+          - 'Cluster'
         constrainttype:  'MaxThreadsConstraint'
       'MinThreadsConstraint':
         ensure:          'present'
         constraintvalue: '2'
-        target:          'WebCluster'
-        targettype:      'Cluster'
+        target:
+          - 'WebCluster'
+        targettype:
+          - 'Cluster'
         constrainttype:  'MinThreadsConstraint'
 
-###wls_workmanager
+### wls_workmanager
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_workmanager
 
+    # this will use default as wls_setting identifier
     wls_workmanager { 'WorkManagerConstraints':
       ensure               => 'present',
       capacity             => 'CapacityConstraint',
       maxthreadsconstraint => 'MaxThreadsConstraint',
       minthreadsconstraint => 'MinThreadsConstraint',
       stuckthreads         => '0',
-      target               => 'WebCluster',
-      targettype           => 'Cluster',
+      target               => ['WebCluster'],
+      targettype           => ['Cluster'],
     }
 
 in hiera
 
+    # this will use default as wls_setting identifier
     workmanager_instances:
       'WorkManagerConstraints':
         ensure:                'present'
@@ -1919,187 +2471,229 @@ in hiera
         maxthreadsconstraint:  'MaxThreadsConstraint'
         minthreadsconstraint:  'MinThreadsConstraint'
         stuckthreads:          '1'
-        target:                'WebCluster'
-        targettype:            'Cluster'
+        target:
+          - 'WebCluster'
+        targettype:
+          - 'Cluster'
 
 
 
-###wls_file_persistence_store
+### wls_file_persistence_store
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_file_persistence_store
 
+    # this will use default as wls_setting identifier
     wls_file_persistence_store { 'jmsFile1':
       ensure     => 'present',
       directory  => 'persistence1',
-      target     => 'wlsServer1',
-      targettype => 'Server',
+      target     => ['wlsServer1'],
+      targettype => ['Server'],
     }
+    # this will use default as wls_setting identifier
     wls_file_persistence_store { 'jmsFile2':
       ensure     => 'present',
       directory  => 'persistence2',
-      target     => 'wlsServer2',
-      targettype => 'Server',
+      target     => ['wlsServer2'],
+      targettype => ['Server'],
     }
+    # this will use default as wls_setting identifier
     wls_file_persistence_store { 'jmsFileSAFAgent1':
       ensure     => 'present',
       directory  => 'persistenceSaf1',
-      target     => 'wlsServer1',
-      targettype => 'Server',
+      target     => ['wlsServer1'],
+      targettype => ['Server'],
     }
 
 in hiera
 
+    # this will use default as wls_setting identifier
     file_persistence_store_instances:
       'jmsFile1':
         ensure:         'present'
         directory:      'persistence1'
-        target:         'wlsServer1'
-        targettype:     'Server'
+        target:
+         - 'wlsServer1'
+        targettype:
+         - 'Server'
       'jmsFile2':
         ensure:         'present'
         directory:      'persistence2'
-        target:         'wlsServer2'
-        targettype:     'Server'
+        target:
+         - 'wlsServer2'
+        targettype:
+         - 'Server'
       'jmsFileSAFAgent1':
         ensure:         'present'
         directory:      'persistenceSaf1'
-        target:         'wlsServer1'
-        targettype:     'Server'
+        target:
+         - 'wlsServer1'
+        targettype:
+         - 'Server'
 
 
-###wls_safagent
+### wls_safagent
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_safagent
 
 
+    # this will use default as wls_setting identifier
     wls_safagent { 'jmsSAFAgent1':
       ensure              => 'present',
       persistentstore     => 'jmsFileSAFAgent1',
       persistentstoretype => 'FileStore',
       servicetype         => 'Sending-only',
-      target              => 'wlsServer1',
-      targettype          => 'Server',
+      target              => ['wlsServer1'],
+      targettype          => ['Server'],
     }
-
+    # this will use default as wls_setting identifier
     wls_safagent { 'jmsSAFAgent2':
       ensure      => 'present',
       servicetype => 'Both',
-      target      => 'wlsServer2',
-      targettype  => 'Server',
+      target      => ['wlsServer2'],
+      targettype  => ['Server'],
     }
 
 in hiera
 
+    # this will use default as wls_setting identifier
     safagent_instances:
-    'jmsSAFAgent1':
-          ensure:              'present'
-          target:              'wlsServer1'
-          targettype:          'Server'
-          servicetype:         'Sending-only'
-          persistentstore:     'jmsFileSAFAgent1'
-          persistentstoretype: 'FileStore'
-    'jmsSAFAgent2':
-          ensure:              'present'
-          target:              'wlsServer2'
-          targettype:          'Server'
-          servicetype:         'Both'
+      'jmsSAFAgent1':
+            ensure:              'present'
+            target:
+              - 'wlsServer1'
+            targettype:
+              - 'Server'
+            servicetype:         'Sending-only'
+            persistentstore:     'jmsFileSAFAgent1'
+            persistentstoretype: 'FileStore'
+      'jmsSAFAgent2':
+            ensure:              'present'
+            target:
+              - 'wlsServer2'
+            targettype:
+              - 'Server'
+            servicetype:         'Both'
 
 
-###wls_jmsserver
+### wls_jmsserver
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_jmsserver
 
+    # this will use default as wls_setting identifier
     wls_jmsserver { 'jmsServer1':
       ensure              => 'present',
       persistentstore     => 'jmsFile1',
       persistentstoretype => 'FileStore',
-      target              => 'wlsServer1',
-      targettype          => 'Server',
+      target              => ['wlsServer1'],
+      targettype          => ['Server'],
     }
+    # this will use default as wls_setting identifier
     wls_jmsserver { 'jmsServer2':
       ensure     => 'present',
-      target     => 'wlsServer2',
-      targettype => 'Server',
+      target     => ['wlsServer2'],
+      targettype => ['Server'],
     }
+    # this will use default as wls_setting identifier
     wls_jmsserver { 'jmsServer3':
       ensure     => 'present',
-      target     => 'wlsServer3',
-      targettype => 'Server',
+      target     => ['wlsServer3'],
+      targettype => ['Server'],
     }
 
 
 in hiera
 
+    # this will use default as wls_setting identifier
     jmsserver_instances:
        jmsServer1:
          ensure:              'present'
-         target:              'wlsServer1'
-         targettype:          'Server'
+         target:
+           - 'wlsServer1'
+         targettype:
+           - 'Server'
          persistentstore:     'jmsFile1'
          persistentstoretype: 'FileStore'
        jmsServer2:
          ensure:              'present'
-         target:              'wlsServer2'
-         targettype:          'Server'
+         target:
+           - 'wlsServer2'
+         targettype:
+           - 'Server'
 
 
-###wls_datasource
+### wls_datasource
 
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_datasource
 
+    # this will use default as wls_setting identifier
     wls_datasource { 'hrDS':
       ensure                     => 'present',
       drivername                 => 'oracle.jdbc.xa.client.OracleXADataSource',
-      extraproperties            => 'SendStreamAsBlob,oracle.net.CONNECT_TIMEOUT',
-      extrapropertiesvalues      => 'true,10000',
+      extraproperties            => ['SendStreamAsBlob','oracle.net.CONNECT_TIMEOUT'],
+      extrapropertiesvalues      => ['true','10000'],
       globaltransactionsprotocol => 'TwoPhaseCommit',
       initialcapacity            => '1',
-      jndinames                  => 'jdbc/hrDS',
+      jndinames                  => ['jdbc/hrDS'],
       maxcapacity                => '15',
-      target                     => 'WebCluster,WebCluster2',
-      targettype                 => 'Cluster,Cluster',
+      target                     => ['WebCluster','WebCluster2'],
+      targettype                 => ['Cluster','Cluster'],
       testtablename              => 'SQL SELECT 1 FROM DUAL',
       url                        => 'jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com',
       user                       => 'hr',
       usexa                      => '1',
     }
+    # this will use default as wls_setting identifier
     wls_datasource { 'jmsDS':
       ensure                     => 'present',
       drivername                 => 'com.mysql.jdbc.Driver',
       globaltransactionsprotocol => 'None',
       initialcapacity            => '1',
-      jndinames                  => 'jmsDS',
+      jndinames                  => ['jmsDS'],
       maxcapacity                => '15',
-      target                     => 'WebCluster',
-      targettype                 => 'Cluster',
+      target                     => ['WebCluster'],
+      targettype                 => ['Cluster'],
       testtablename              => 'SQL SELECT 1',
       url                        => 'jdbc:mysql://10.10.10.10:3306/jms',
       user                       => 'jms',
       usexa                      => '1',
+      # To Optionally Configure as Gridlink Datasource
+      fanenabled                 => '1',
+      onsnodelist                => '10.10.10.110:6200,10.10.10.111:6200',
     }
 
 in hiera
 
+
+    # this will use default as wls_setting identifier
     datasource_instances:
         'hrDS':
           ensure:                      'present'
           drivername:                  'oracle.jdbc.xa.client.OracleXADataSource'
-          extraproperties:             'SendStreamAsBlob,oracle.net.CONNECT_TIMEOUT'
-          extrapropertiesvalues:       'true,10000'
+          extraproperties:
+            - 'SendStreamAsBlob'
+            - 'oracle.net.CONNECT_TIMEOUT'
+          extrapropertiesvalues:
+            - 'true'
+            - '10000'
           globaltransactionsprotocol:  'TwoPhaseCommit'
           initialcapacity:             '1'
-          jndinames:                   'jdbc/hrDS'
+          jndinames:
+           - 'jdbc/hrDS'
           maxcapacity:                 '15'
-          target:                      'WebCluster,WebCluster2'
-          targettype:                  'Cluster,Cluster'
+          target:
+            - 'WebCluster'
+            - 'WebCluster2'
+          targettype:
+            - 'Cluster'
+            - 'Cluster'
           testtablename:               'SQL SELECT 1 FROM DUAL'
           url:                         "jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com"
           user:                        'hr'
@@ -2109,40 +2703,49 @@ in hiera
           drivername:                  'com.mysql.jdbc.Driver'
           globaltransactionsprotocol:  'None'
           initialcapacity:             '1'
-          jndinames:                   'jmsDS'
+          jndinames:
+            - 'jmsDS'
           maxcapacity:                 '15'
-          target:                      'WebCluster'
-          targettype:                  'Cluster'
+          target:
+           - 'WebCluster'
+          targettype:
+           - 'Cluster'
           testtablename:               'SQL SELECT 1'
           url:                         'jdbc:mysql://10.10.10.10:3306/jms'
           user:                        'jms'
           usexa:                       '1'
+          # To Optionally Configure as Gridlink Datasource
+          fanenabled:                  '1'
+          onsnodelist:                 '10.10.10.110:6200,10.10.10.111:6200'
 
+### wls_jms_module
 
-###wls_jms_module
-
-it needs wls_setting and when domain is not provided it will use the 'default'
+it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_jms_module
 
+    # this will use default as wls_setting identifier
     wls_jms_module { 'jmsClusterModule':
       ensure     => 'present',
-      target     => 'WebCluster',
-      targettype => 'Cluster',
+      target     => ['WebCluster'],
+      targettype => ['Cluster'],
     }
 
 in hiera
 
+    # this will use default as wls_setting identifier
     jms_module_instances:
        jmsClusterModule:
          ensure:      'present'
-         target:      'WebCluster'
-         targettype:  'Cluster'
+         target:
+           - 'WebCluster'
+         targettype:
+           - 'Cluster'
 
 
-###wls_connection_factory
+### wls_connection_factory
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_connection_factory
 
@@ -2182,9 +2785,9 @@ in hiera
           transactiontimeout: '3600'
           xaenabled:          '1'
 
-###wls_jms_queue
+### wls_jms_queue
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_jms_queue
 
@@ -2267,9 +2870,9 @@ in hiera
          timetolive:               '300000'
 
 
-###wls_jms_topic
+### wls_jms_topic
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_jms_topic
 
@@ -2303,9 +2906,9 @@ in hiera
 
 
 
-###wls_jms_quota
+### wls_jms_quota
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_jms_quota
 
@@ -2323,7 +2926,7 @@ or use puppet resource wls_jms_quota
       policy          => 'FIFO',
       shared          => '0',
     }
-    
+
 
 in hiera
 
@@ -2342,21 +2945,21 @@ in hiera
           shared:           '0'
 
 
-###wls_jms_subdeployment
+### wls_jms_subdeployment
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_jms_subdeployment
 
     wls_jms_subdeployment { 'jmsClusterModule:jmsServers':
       ensure     => 'present',
-      target     => 'jmsServer1,jmsServer2',
-      targettype => 'JMSServer,JMSServer',
+      target     => ['jmsServer1','jmsServer2'],
+      targettype => ['JMSServer','JMSServer'],
     }
     wls_jms_subdeployment { 'jmsClusterModule:wlsServers':
       ensure     => 'present',
-      target     => 'WebCluster',
-      targettype => 'Cluster',
+      target     => ['WebCluster'],
+      targettype => ['Cluster'],
     }
 
 in hiera
@@ -2364,17 +2967,23 @@ in hiera
     jms_subdeployment_instances:
        'jmsClusterModule:jmsServers':
           ensure:     'present'
-          target:     'jmsServer1,jmsServer2'
-          targettype: 'JMSServer,JMSServer'
+          target:
+           - 'jmsServer1'
+           - 'jmsServer2'
+          targettype:
+          - 'JMSServer'
+          - 'JMSServer'
        'jmsClusterModule:wlsServers':
           ensure:     'present'
-          target:     'WebCluster'
-          targettype: 'Cluster'
-    
+          target:
+           - 'WebCluster'
+          targettype:
+           - 'Cluster'
 
-###wls_saf_remote_context
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+### wls_saf_remote_context
+
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_saf_remote_context
 
@@ -2403,9 +3012,9 @@ in hiera
 
 
 
-###wls_saf_error_handler
+### wls_saf_error_handler
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_saf_error_handler
 
@@ -2430,9 +3039,9 @@ in hiera
          policy:           'Log'
          logformat:        '%header%%properties%'
 
-###wls_saf_imported_destination
+### wls_saf_imported_destination
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_saf_imported_destination
 
@@ -2471,9 +3080,9 @@ in hiera
       timetolivedefault:    '100000000'
       usetimetolivedefault: '1'
 
-###wls_saf_imported_destination_object
+### wls_saf_imported_destination_object
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name and imported_destination 
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name and imported_destination
 
 or use puppet resource wls_saf_imported_destination_object
 
@@ -2513,9 +3122,9 @@ in hiera
           usetimetolivedefault:  '1'
           nonpersistentqos:      'Exactly-Once'
 
-###wls_foreign_server
+### wls_foreign_server
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name 
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
 or use puppet resource wls_foreign_server
 
@@ -2523,15 +3132,15 @@ or use puppet resource wls_foreign_server
       ensure                => 'present',
       defaulttargeting      => '1',
       extraproperties       => 'datasource',
-      extrapropertiesvalues => 'jdbc/hrDS',
-      initialcontextfactory => 'oracle.jms.AQjmsInitialContextFactory',
+      extrapropertiesvalues => ['jdbc/hrDS'],
+      initialcontextfactory => ['oracle.jms.AQjmsInitialContextFactory'],
     }
     wls_foreign_server { 'jmsClusterModule:Jboss':
       ensure                => 'present',
       connectionurl         => 'remote://10.10.10.10:4447',
       defaulttargeting      => '0',
-      extraproperties       => 'java.naming.security.principal',
-      extrapropertiesvalues => 'jmsuser',
+      extraproperties       => ['java.naming.security.principal'],
+      extrapropertiesvalues => ['jmsuser'],
       initialcontextfactory => 'org.jboss.naming.remote.client.InitialContextFactory',
       subdeployment         => 'wlsServers',
     }
@@ -2541,23 +3150,27 @@ in hiera
     'jmsClusterModule:AQForeignServer':
         ensure:                'present'
         defaulttargeting:      '1'
-        extraproperties:       'datasource'
-        extrapropertiesvalues: 'jdbc/hrDS'
+        extraproperties:
+          - 'datasource'
+        extrapropertiesvalues:
+          - 'jdbc/hrDS'
         initialcontextfactory: 'oracle.jms.AQjmsInitialContextFactory'
     'jmsClusterModule:Jboss':
         ensure:                'present'
         connectionurl:         'remote://10.10.10.10:4447'
         defaulttargeting:      '0'
-        extraproperties:       'java.naming.security.principal'
-        extrapropertiesvalues: 'jmsuser'
+        extraproperties:
+          - 'java.naming.security.principal'
+        extrapropertiesvalues:
+          - 'jmsuser'
         initialcontextfactory: 'org.jboss.naming.remote.client.InitialContextFactory'
         subdeployment:         'wlsServers'
         password:              'test'
 
 
-###wls_foreign_server_object
+### wls_foreign_server_object
 
-it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name and foreign server 
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name and foreign server
 
 or use puppet resource wls_foreign_server_object
 

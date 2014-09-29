@@ -1,11 +1,11 @@
 module Puppet
   newtype(:wls_rcu) do
-    desc "This is the Oracle WebLogic RCU ( Repository creation utility) installer type "
+    desc 'This is the Oracle WebLogic RCU ( Repository creation utility) installer type'
 
     newproperty(:ensure) do
-      desc "Whether a Repository should be created."
+      desc 'Whether a Repository should be created.'
 
-      newvalue(:present, :event => :rcu_installed, :invalidate_refreshes => true) do
+      newvalue(:present, :event => :rcu_installed) do
         provider.present
       end
 

@@ -2,79 +2,40 @@ require 'pathname'
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  #
   newtype(:wls_server_channel) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
-    desc "This resource allows you to manage server in an WebLogic domain."
+    desc 'This resource allows you to manage server in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name} "
-      environment = { "action"=>"index","type"=>"wls_server_channel"}
+      environment = { 'action' => 'index', 'type' => 'wls_server_channel' }
       wlst template('puppet:///modules/orawls/providers/wls_server_channel/index.py.erb', binding), environment
     end
 
-    on_create  do | command_builder |
+    on_create do | command_builder |
       Puppet.info "create #{name} "
       template('puppet:///modules/orawls/providers/wls_server_channel/create.py.erb', binding)
     end
 
-    on_modify  do | command_builder |
+    on_modify do | command_builder |
       Puppet.info "modify #{name} "
       template('puppet:///modules/orawls/providers/wls_server_channel/modify.py.erb', binding)
     end
 
-    on_destroy  do | command_builder |
+    on_destroy do | command_builder |
       Puppet.info "destroy #{name} "
       template('puppet:///modules/orawls/providers/wls_server_channel/destroy.py.erb', binding)
-    end
-
-    def self.title_patterns
-      # possible values for /^((.*\/)?(.*):(.*)?)$/
-      # default/server1:channel1 with this as regex outcome 
-      #    default/server1:channel1  default/ server1 channel1
-      # server1:channel1 with this as regex outcome
-      #    server1  nil  server1 channel1
-      identity  = lambda {|x| x}
-      name      = lambda {|x| 
-          if x.include? "/"
-            x            # it contains a domain
-          else
-            'default/'+x # add the default domain
-          end
-        }
-      optional  = lambda{ |x| 
-          if x.nil?
-            'default' # when not found use default
-          else
-            x[0..-2]  # remove the last char / from domain name
-          end
-        }
-      [
-        [
-          /^((.*\/)?(.*):(.*)?)$/,
-          [
-            [ :name        , name     ],
-            [ :domain      , optional ],
-            [ :server      , identity ],
-            [ :channel_name, identity ]
-          ]
-        ],
-        [
-          /^([^=]+)$/,
-          [
-            [ :name, identity ]
-          ]
-        ]
-      ]
     end
 
     parameter :domain
@@ -82,14 +43,18 @@ module Puppet
     parameter :server
     parameter :channel_name
 
-    property  :protocol
-    property  :enabled
-    property  :listenport
-    property  :listenaddress
-    property  :publicaddress
-    property  :httpenabled
-    property  :outboundenabled
-    property  :tunnelingenabled
+    property :protocol
+    property :enabled
+    property :listenport
+    property :listenaddress
+    property :publicaddress
+    property :httpenabled
+    property :outboundenabled
+    property :tunnelingenabled
+
+    add_title_attributes(:server, :channel_name) do
+      /^((.*\/)?(.*):(.*)?)$/
+    end
 
   end
 end

@@ -14,19 +14,20 @@ describe oracle_service do
     @class = oracle_service
     @provider = double 'provider'
     allow(@provider).to receive(:name).and_return(:simple)
-    allow(Puppet::Type::Oracle_service).to receive(:defaultprovider).and_return @provider
+    class Puppet::Type::Oracle_service; def self.default_sid; 'TEST'; end; end
+    allow(@class).to receive(:defaultprovider).and_return @provider
     @resource = @class.new({:name  => 'SCOTT'})
   end
 
 
-  it 'should have :name be its namevar' do
-    @class.key_attributes.should == [:name]
+  it 'should have :name and :service_name as its namevar' do
+    expect(@class.key_attributes).to eq([:name, :service_name])
   end
 
-  describe ':name' do
+  describe ':service_name' do
 
     it_behaves_like 'an easy_type attribute', {
-      :attribute          => :name,
+      :attribute          => :service_name,
       :result_identifier  => 'NAME',
       :raw_value          => 'PIF.infoplus.nl',
       :test_value         => 'PIF.infoplus.nl'

@@ -2,16 +2,19 @@ require 'pathname'
 $:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
 $:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
-require 'utils/oracle_access'
+require 'ora_utils/oracle_access'
+require 'ora_utils/title_parser'
+
 
 module Puppet
   #
   # Create a new type oracle_user. Oracle user, works in conjunction 
-  # with the SqlResource provider
+  # with the §Resource provider
   #
   newtype(:oracle_user) do
     include EasyType
-    include ::Utils::OracleAccess
+    include ::OraUtils::OracleAccess
+    extend ::OraUtils::TitleParser
 
     desc %q{
       This resource allows you to manage a user in an Oracle database.
@@ -21,30 +24,31 @@ module Puppet
 
     set_command(:sql)
 
-
     to_get_raw_resources do
-      sql "select * from dba_users"
+      sql_on_all_sids "select * from dba_users"
     end
 
     on_create do | command_builder |
-      if password
-        "create user #{name} identified by #{password}"
-      else
-        "create user #{name}"
-      end
+      statement = password ?  "create user #{username} identified by #{password}" : "create user #{username}"
+      command_builder.add(statement, :sid => sid)
     end
 
     on_modify do | command_builder |
-      "alter user #{name}"
+      command_builder.add("alter user #{username}", :sid => sid)
     end
 
     on_destroy do | command_builder |
-      "drop user #{name}"
+      command_builder.add("drop user #{username}", :sid => sid)
     end
 
+    map_title_to_sid(:username) { /^((.*?\/)?(.*)?)$/}
+
     parameter :name
+    parameter :username
+    parameter :sid
+
     property  :user_id
-    property  :password
+    parameter :password
     property  :default_tablespace
     property  :temporary_tablespace
     property  :quotas

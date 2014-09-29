@@ -62,18 +62,25 @@ The module contains the following types:
 This is the only module that does it's work outside of the Oracle database. It makes sure the Oracle SQL*Net listener is running. 
 
 ```puppet
-listener {'listener':
+listener {'SID':
   ensure  => running,
   require => Exec['db_install_instance'],
 }
 ```
+
+The name of the resource *MUST* be the sid for which you want to start the listener.
+
+###Specifying the SID
+
+All types have a name like `sid\resource`. The sid is optional. If you don't specify the sid, the type will use the first database instance from the `/etc/oratab`  file. We advise you to use a full name, e.g. an sid and a resource name. This makes the manifest mutch more reseliant for changes in the environment. 
+
 
 ###oracle_user
 
 This type allows you to manage a user inside an Oracle Database. It recognises most of the options that [CREATE USER](http://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_8003.htm#SQLRF01503) supports. Besides these options, you can also use this type to manage the grants and the quota's for this user.
 
 ```puppet
-oracle_user{user_name:
+oracle_user{sid/user_name:
   temporary_tablespace      => temp,
   default_tablespace        => 'my_app_ts,
   password                  => 'verysecret',
@@ -85,22 +92,50 @@ oracle_user{user_name:
 }
 ```
 
+
 ###tablespace
 
 This type allows you to manage a tablespace inside an Oracle Database. It recognises most of the options that [CREATE TABLESPACE](http://docs.oracle.com/cd/B28359_01/server.111/b28310/tspaces002.htm#ADMIN11359) supports. 
 
 ```puppet
-tablespace {'my_app_ts':
+tablespace {'sid/my_app_ts':
   ensure                    => present,
-  size                      => 20G,
+  datafile                  => 'my_app_ts.dbf',
+  size                      => 5G,
   logging                   => yes,
   autoextend                => on,
   next                      => 100M,
-  max_size                  => 12288M,
+  max_size                  => 20G,
   extent_management         => local,
   segment_space_management  => auto,
 }
 ```
+
+You can also create an undo tablespace:
+
+```puppet
+tablespace {'sid/my_undots_1':
+  ensure                    => present,
+  content                   => 'undo',
+}
+```
+
+or a temporary taplespace:
+
+tablespace {'sid/my_temp_ts':
+  ensure                    => present,
+  datafile                  => 'my_temp_ts.dbf',
+  content                   => 'temporary',
+  size                      => 5G,
+  logging                   => yes,
+  autoextend                => on,
+  next                      => 100M,
+  max_size                  => 20G,
+  extent_management         => local,
+  segment_space_management  => auto,
+}
+```
+
 
 ###role
 
@@ -108,21 +143,34 @@ This type allows you to create or delete a role inside an Oracle Database. It re
 
 
 ```puppet
-role {'just_a_role':
+role {'sid/just_a_role':
   ensure    => present,
 }
 ```
 
 ###oracle_service
 
-his type allows you to create or delete a service inside an Oracle Database. 
+This type allows you to create or delete a service inside an Oracle Database. 
 
 
 ```puppet
-oracle_service{'my_app_service':
+oracle_service{'sid/my_app_service':
   ensure  => present,
 }
 ```
+
+###init_param
+
+this type allows you to manage your init.ora parameters
+
+
+```puppet
+init_param{'sid/parameter/instance':
+  ensure  => present,
+  value   => 'the_value'
+}
+```
+
 
 ##Limitations
 

@@ -11,7 +11,7 @@ newproperty(:max_size) do
   end
 
   on_apply do | command_builder|
-  	"maxsize #{should}"
+  	"maxsize #{should}" if resource[:autoextend] == :on
   end
 
 end

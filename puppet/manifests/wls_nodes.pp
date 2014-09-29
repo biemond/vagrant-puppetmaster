@@ -1,7 +1,7 @@
 node 'nodewls1.example.com','nodewls2.example.com' {
 
   include os, ssh, java, orawls::weblogic, bsu_nodes, orautils, copydomain_nodes, nodemanager_nodes
-  Class['java'] -> Class['orawls::weblogic'] 
+  Class['java'] -> Class['orawls::weblogic']
 }
 
 class bsu_nodes {
